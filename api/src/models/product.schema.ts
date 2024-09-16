@@ -17,7 +17,7 @@ const productSchema = new Schema({
     min: 0,
   },
   size: {
-    type: String,
+    type: [String],
     required: true,
   },
   qty: {
@@ -33,10 +33,6 @@ const productSchema = new Schema({
     type: [String],
     required: false,
   },
-  coupon: {
-    type: String,
-    required: false,
-  },
   salePercent: {
     type: Number,
     required: false,
@@ -48,10 +44,14 @@ const productSchema = new Schema({
     required: false,
     maxlength: 500,
   },
-  viewsCount: {
+  reviewCount: {
     type: Number,
     default: 0,
     min: 0,
+    require: false,
+  },
+  averageRating: {
+    type: Number,
     require: false,
   },
   createdAt: {

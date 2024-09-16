@@ -8,11 +8,6 @@ const categorySchema = new Schema({
     unique: true,
     trim: true,
   },
-  description: {
-    type: String,
-    required: false,
-    maxlength: 500,
-  },
   image: {
     type: String,
     required: false,
