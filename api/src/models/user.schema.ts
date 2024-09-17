@@ -1,4 +1,5 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 
 const userSchema = new Schema({
   userName: {
@@ -8,6 +9,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   phoneNumber: {
     type: String,
@@ -29,7 +31,7 @@ const userSchema = new Schema({
   savedProduct: {
     type: [Schema.Types.ObjectId],
     ref: "Product",
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Date,
