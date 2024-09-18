@@ -28,11 +28,9 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <Header />
           <div style={{ minHeight: "calc(100vh - 320.5px - 74px)" }}>
             {children}
           </div>
-          <Footer />
         </body>
       </ProductContextProvider>
     </html>

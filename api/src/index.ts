@@ -6,6 +6,7 @@ dotenv.config();
 import {
   authRouter,
   categoryRouter,
+  orderRouter,
   productRouter,
   reviewRouter,
   userRouter,
@@ -30,6 +31,7 @@ app.use("/product", productRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/review", reviewRouter);
+app.use("/order", orderRouter);
 
 app.listen(3001, () => {
   console.log("server is running on http://localhost:3001");
