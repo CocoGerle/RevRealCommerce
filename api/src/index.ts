@@ -7,6 +7,7 @@ import {
   authRouter,
   categoryRouter,
   productRouter,
+  reviewRouter,
   userRouter,
 } from "./routes";
 import authMiddleware from "./controllers/middlewares/auth.middleware";
@@ -28,6 +29,7 @@ app.use("/category", categoryRouter);
 app.use("/product", productRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
+app.use("/review", reviewRouter);
 
 app.listen(3001, () => {
   console.log("server is running on http://localhost:3001");

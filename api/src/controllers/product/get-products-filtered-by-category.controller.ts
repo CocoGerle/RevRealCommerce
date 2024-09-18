@@ -6,7 +6,6 @@ export const getProductsFilteredByCategoryController: RequestHandler = async (
   res
 ) => {
   try {
-    console.log(req.params, "params");
     const products = await productModel
       .find({ categoryId: req.params.id })
       .populate("categoryId");
