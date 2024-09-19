@@ -1,12 +1,12 @@
 import { RequestHandler } from "express";
 import { reviewModel } from "../../models/review.schema";
+import { productModel } from "../../models/product.schema";
 
 export const getReviewByProductIdController: RequestHandler = async (
   req,
   res
 ) => {
   const { id } = req.params;
-  console.log(id);
   try {
     const review = await reviewModel
       .find({ productId: id })

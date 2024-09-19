@@ -6,7 +6,6 @@ import { useContext, useEffect, useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { FaStar } from "react-icons/fa";
 import Image from "next/image";
-import { FcRating } from "react-icons/fc";
 import { ProductContext } from "@/components/utils/context";
 
 const totalStars = 5;
@@ -33,7 +32,9 @@ type ReviewType = {
   _id: string;
   productId: string;
   comment: string;
-  userId: string;
+  userId: {
+    userName: string;
+  };
   rating: number;
 };
 const Detail = () => {
@@ -46,12 +47,15 @@ const Detail = () => {
   const [product, setProduct] = useState<ProductType>();
   console.log(product);
 
-  const [review, setReview] = useState<ReviewType>();
+  const [review, setReview] = useState<ReviewType[]>([]);
   const [currentImage, setCurrentImage] = useState<number>(0);
 
   const [hiddenElement, setHiddenElement] = useState(false);
   const [count, setCount] = useState(0);
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const toggleHeart = (id: string) => {
     if (!id) return;
@@ -86,6 +90,29 @@ const Detail = () => {
       setReview(response.data.review);
       console.log(response.data.review);
     } catch (error) {}
+  };
+
+  const createReview = async (
+    productId: string,
+    userId: string,
+    comment: string,
+    rating: number
+  ) => {
+    try {
+      const response = await api?.post("http://localhost:3001/review/", {
+        productId,
+        userId,
+        comment,
+        rating,
+      });
+      setComment("");
+      setRating(0);
+      await getReview(productId);
+      console.log(response.data);
+    } catch (error) {
+      console.log("Review error");
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -203,18 +230,22 @@ const Detail = () => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex">
-                  {Array.from({ length: totalStars }, (_, starIndex) => (
-                    <FaStar
-                      key={starIndex}
-                      className={`${
-                        starIndex < Math.floor(product?.averageRating)
-                          ? "text-yellow-300"
-                          : starIndex < product?.averageRating
-                          ? "text-yellow-200"
-                          : "text-gray-300"
-                      } text-xl`}
-                    />
-                  ))}
+                  {Array.from({ length: totalStars }, (_, starIndex) => {
+                    const averageRating = product?.averageRating || 0;
+                    const wholeRating = Math.floor(averageRating);
+                    return (
+                      <FaStar
+                        key={starIndex}
+                        className={`${
+                          starIndex < wholeRating
+                            ? "text-yellow-300"
+                            : starIndex < averageRating
+                            ? "text-yellow-200"
+                            : "text-gray-300"
+                        } text-xl`}
+                      />
+                    );
+                  })}
                 </div>
                 <div className="font-bold">
                   {product?.averageRating?.toFixed(1)}
@@ -224,13 +255,13 @@ const Detail = () => {
             </div>
             <div className={`${hiddenElement ? "block" : "hidden"}`}>
               <div>
-                {review?.map((item, index) => (
+                {review?.map((item: ReviewType, index: number) => (
                   <div
                     key={index}
                     className="border-gray-200 border-b border-dashed pt-6 pb-[21px]"
                   >
                     <div className="flex items-center gap-2">
-                      <div>{item?.userId.userName}</div>
+                      <div>{item?.userId.userName || "Unknown User"}</div>
                       <div className="flex">
                         {Array.from({ length: totalStars }, (_, starIndex) => (
                           <FaStar
@@ -254,11 +285,15 @@ const Detail = () => {
                 <div>
                   <div>Одоор үнэлэх:</div>
                   <div className="flex">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
+                    {Array.from({ length: totalStars }, (_, index) => (
+                      <FaStar
+                        key={index}
+                        onClick={() => setRating(index + 1)}
+                        className={`cursor-pointer ${
+                          index < rating ? "text-yellow-300" : "text-gray-300"
+                        }`}
+                      />
+                    ))}
                   </div>
                 </div>
                 <div className="flex gap-6 flex-col">
@@ -267,9 +302,23 @@ const Detail = () => {
                     <input
                       className="border w-full h-[94px] rounded-lg"
                       placeholder="Энд бичнэ үү"
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        setComment(event.target.value)
+                      }
                     />
                   </div>
-                  <button className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full">
+                  <button
+                    className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full"
+                    onClick={() =>
+                      createReview(
+                        productId,
+                        "66e90e7a9149b249fd1cf4d8",
+
+                        comment,
+                        rating
+                      )
+                    }
+                  >
                     Үнэлэх
                   </button>
                 </div>
