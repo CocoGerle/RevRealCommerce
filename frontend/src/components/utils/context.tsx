@@ -1,16 +1,27 @@
 "use client";
 
-import { createContext, useState, ReactNode, FC } from "react";
+import { createContext, useState, ReactNode, FC, useEffect } from "react";
+import axios from "axios";
+import { api } from "../lib/axios";
 
 interface Product {
-  img: string;
-  title: string;
+  _id: string;
+  productName: string;
+  categoryId: string[];
   price: number;
+  size: string[];
+  qty: number;
+  images: string[];
+  thumbnils: string[];
+  salePercent: number;
+  description: string;
+  reviewCount: number;
+  averageRating: number;
 }
 
 interface ProductContextType {
-  product: Product[];
-  setProduct: React.Dispatch<React.SetStateAction<Product[]>>;
+  products: Product[];
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
 export const ProductContext = createContext<ProductContextType | null>(null);
@@ -22,29 +33,27 @@ interface ProductContextProviderProps {
 export const ProductContextProvider: FC<ProductContextProviderProps> = ({
   children,
 }) => {
-  const [product, setProduct] = useState<Product[]>([
-    { img: "/image.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image1.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image2.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image3.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image1.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image2.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image3.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image1.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image2.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image3.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image1.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image2.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image3.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image.png", title: "Wildflower hoodie", price: 120000 },
-    { img: "/image1.png", title: "Wildflower hoodie", price: 120000 },
-  ]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const getProducts = async () => {
+    try {
+      const response = await api?.get("/product", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setProducts(response.data.products);
+      console.log(response.data.products);
+    } catch (error) {
+      return console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   return (
-    <ProductContext.Provider value={{ product, setProduct }}>
+    <ProductContext.Provider value={{ products, setProducts }}>
       {children}
     </ProductContext.Provider>
   );

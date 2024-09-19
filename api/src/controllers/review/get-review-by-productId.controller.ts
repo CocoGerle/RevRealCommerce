@@ -8,7 +8,9 @@ export const getReviewByProductIdController: RequestHandler = async (
   const { id } = req.params;
   console.log(id);
   try {
-    const review = await reviewModel.find({ productId: id });
+    const review = await reviewModel
+      .find({ productId: id })
+      .populate("userId", { userName: 1 });
 
     return res.status(200).json({
       review,

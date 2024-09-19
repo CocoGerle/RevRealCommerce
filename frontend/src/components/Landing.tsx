@@ -12,7 +12,7 @@ export const Landing = () => {
     return <div>Loading...</div>;
   }
 
-  const { product } = context;
+  const { products } = context;
 
   return (
     <div className="mb-[87px]">
@@ -31,15 +31,15 @@ export const Landing = () => {
         </div>
       </div>
       <div className="max-w-screen-xl m-auto grid grid-cols-4 grid-rows-6 gap-x-5 gap-y-8 [&>div:nth-child(7)]:col-span-2 [&>div:nth-child(7)]:row-span-2 [&>div:nth-child(8)]:row-span-2 [&>div:nth-child(8)]:col-span-2">
-        {product.map((item, index) => {
+        {products?.map((item, index) => {
           const customHeight =
             index === 6 ? "764px" : index === 7 ? "764px" : "331px";
           return (
             <div key={index}>
-              <Link href={`detail`}>
+              <Link href={`${item._id}`}>
                 <Cards
-                  img={item.img}
-                  title={item.title}
+                  images={item.images}
+                  productName={item.productName}
                   price={item.price}
                   customHeight={customHeight}
                   index={index}

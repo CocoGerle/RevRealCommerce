@@ -11,7 +11,7 @@ import {
   reviewRouter,
   userRouter,
 } from "./routes";
-import authMiddleware from "./controllers/middlewares/auth.middleware";
+// import authMiddleware from "./controllers/middlewares/auth.middleware";
 
 connectToDataBase();
 
@@ -24,7 +24,7 @@ app.get("/", (_req, res) => {
   res.json({ message: "hello" });
 });
 
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 app.use("/category", categoryRouter);
 app.use("/product", productRouter);

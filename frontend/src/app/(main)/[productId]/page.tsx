@@ -1,0 +1,303 @@
+"use client";
+import { Cards } from "@/components/Cards";
+import { api } from "@/components/lib/axios";
+import { useParams } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { GoHeart, GoHeartFill } from "react-icons/go";
+import { FaStar } from "react-icons/fa";
+import Image from "next/image";
+import { FcRating } from "react-icons/fc";
+import { ProductContext } from "@/components/utils/context";
+
+const totalStars = 5;
+
+type IdType = {
+  productId: string;
+};
+
+type ProductType = {
+  _id: string;
+  productName: string;
+  categoryId: string[];
+  price: number;
+  size: string[];
+  qty: number;
+  images: string[];
+  thumbnils: string[];
+  salePercent: number;
+  description: string;
+  reviewCount: number;
+  averageRating: number;
+};
+type ReviewType = {
+  _id: string;
+  productId: string;
+  comment: string;
+  userId: string;
+  rating: number;
+};
+const Detail = () => {
+  const context = useContext(ProductContext);
+  if (!context) {
+    return <div>Loading...</div>;
+  }
+
+  const { products } = context;
+  const [product, setProduct] = useState<ProductType>();
+  console.log(product);
+
+  const [review, setReview] = useState<ReviewType>();
+  const [currentImage, setCurrentImage] = useState<number>(0);
+
+  const [hiddenElement, setHiddenElement] = useState(false);
+  const [count, setCount] = useState(0);
+  const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
+
+  const toggleHeart = (id: string) => {
+    if (!id) return;
+    setHearts((prevHearts) => ({
+      ...prevHearts,
+      [id]: !prevHearts[id],
+    }));
+  };
+
+  const [bgColor, setBgColor] = useState(0);
+  const { productId } = useParams<IdType>();
+
+  const getProduct = async (productId: string) => {
+    try {
+      const response = await api?.get(`/product/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setProduct(response.data.product);
+    } catch (error) {
+      return console.log(error);
+    }
+  };
+  const getReview = async (productId: string) => {
+    try {
+      const response = await api?.get(`/review/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setReview(response.data.review);
+      console.log(response.data.review);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getProduct(productId);
+    getReview(productId);
+  }, []);
+
+  return (
+    <div className="max-w-screen-2xl m-auto mt-[52px]">
+      <div className="flex items-start justify-center gap-[20px] w-full  ">
+        <div className="pt-[100px] flex flex-col gap-2 ">
+          {product?.images.map((item, index) => (
+            <div key={index}>
+              <Image
+                className={`rounded-md cursor-pointer ${
+                  currentImage === index ? "border border-black" : ""
+                }`}
+                src={item}
+                alt=""
+                width={67}
+                height={67}
+                onClick={() => setCurrentImage(index)}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="w-[422px] h-[521px] relative">
+          {product?.images ? (
+            <Image
+              className="rounded-2xl"
+              style={{ objectFit: "cover" }}
+              src={product?.images[currentImage]}
+              fill
+              alt=""
+            />
+          ) : (
+            <p>no image selected</p>
+          )}
+        </div>
+
+        <div className=" w-[50%]">
+          <div className="pt-[100px] flex flex-col gap-6">
+            <div>
+              <div className="flex flex-col gap-2">
+                <div className="py-[2px] px-[10px] rounded-full border w-fit font-semibold border-[#2563EB]">
+                  ШИНЭ
+                </div>
+                <div className="flex gap-2">
+                  <div>Wildflower Hoodie</div>
+                  <div onClick={() => toggleHeart(product?._id)}>
+                    {hearts[product?._id] ? (
+                      <GoHeartFill size={24} />
+                    ) : (
+                      <GoHeart size={24} />
+                    )}
+                  </div>
+                </div>
+                <div>{product?.description}</div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <div className="underline">Хэмжээний заавар</div>
+                <div className="flex gap-1">
+                  {product?.size.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => setBgColor(index)}
+                        className={`flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer hover:bg-slate-300 ${
+                          bgColor === index ? "bg-black text-white " : ""
+                        }`}
+                      >
+                        {item}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div
+                  className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
+                  onClick={() => setCount((prev) => (prev > 0 ? prev - 1 : 0))}
+                >
+                  -
+                </div>
+                <div>{count}</div>
+                <div
+                  className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
+                  onClick={() => setCount((prev) => prev + 1)}
+                >
+                  +
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="font-bold text-[20px] pb-2">
+                {product?.price.toLocaleString()}₮
+              </div>
+              <button className="text-white bg-[#2563EB] py-2 px-9 rounded-full">
+                Сагсанд нэмэх
+              </button>
+            </div>
+            <div>
+              <div className="flex gap-4">
+                <div>Үнэлгээ</div>
+                <div
+                  onClick={() => {
+                    setHiddenElement(!hiddenElement);
+                  }}
+                  className="cursor-pointer underline text-[#2563EB]"
+                >
+                  {hiddenElement ? "Бүгдийг хураах" : "Бүгдийг харах"}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex">
+                  {Array.from({ length: totalStars }, (_, starIndex) => (
+                    <FaStar
+                      key={starIndex}
+                      className={`${
+                        starIndex < Math.floor(product?.averageRating)
+                          ? "text-yellow-300"
+                          : starIndex < product?.averageRating
+                          ? "text-yellow-200"
+                          : "text-gray-300"
+                      } text-xl`}
+                    />
+                  ))}
+                </div>
+                <div className="font-bold">
+                  {product?.averageRating?.toFixed(1)}
+                </div>
+                <div className="text-[#71717A]">({product?.reviewCount})</div>
+              </div>
+            </div>
+            <div className={`${hiddenElement ? "block" : "hidden"}`}>
+              <div>
+                {review?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="border-gray-200 border-b border-dashed pt-6 pb-[21px]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div>{item?.userId.userName}</div>
+                      <div className="flex">
+                        {Array.from({ length: totalStars }, (_, starIndex) => (
+                          <FaStar
+                            key={starIndex}
+                            className={`${
+                              starIndex < Math.floor(item.rating)
+                                ? "text-yellow-300"
+                                : starIndex < item.rating
+                                ? "text-yellow-200"
+                                : "text-gray-300"
+                            } text-xl`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="text-[#71717A]">{item.comment}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col gap-6 bg-gray-100 rounded-lg p-6">
+                <div>
+                  <div>Одоор үнэлэх:</div>
+                  <div className="flex">
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                  </div>
+                </div>
+                <div className="flex gap-6 flex-col">
+                  <div>Сэтгэгдэл үлдээх:</div>
+                  <div className="w-full">
+                    <input
+                      className="border w-full h-[94px] rounded-lg"
+                      placeholder="Энд бичнэ үү"
+                    />
+                  </div>
+                  <button className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full">
+                    Үнэлэх
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-[80px] mb-[87px] max-w-screen-xl m-auto">
+        <h1 className="text-[30px] font-bold mb-[24px]">Холбоотой бараа</h1>
+        <div className="grid grid-cols-4 gap-x-5 gap-y-12">
+          {products.slice(0, 8).map((item, index) => {
+            const customHeight = "331px";
+            return (
+              <div key={index}>
+                <Cards
+                  images={item.images}
+                  productName={item.productName}
+                  price={item.price}
+                  customHeight={customHeight}
+                  index={index}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+export default Detail;

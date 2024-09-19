@@ -4,16 +4,16 @@ import React, { useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 
 interface MyComponentProps {
-  img: string;
-  title: string;
+  images: string[];
+  productName: string;
   price: number;
   customHeight: string;
   index: number;
 }
 
 export const Cards: React.FC<MyComponentProps> = ({
-  img,
-  title,
+  images = [],
+  productName,
   price,
   customHeight,
   index,
@@ -35,7 +35,7 @@ export const Cards: React.FC<MyComponentProps> = ({
         <Image
           fill
           alt="card"
-          src={img}
+          src={images[0]}
           style={{ objectFit: "cover" }}
           className="transition-transform duration-300 transform hover:scale-150"
         />
@@ -47,7 +47,7 @@ export const Cards: React.FC<MyComponentProps> = ({
         </div>
       </div>
       <div>
-        <p>{title}</p>
+        <p>{productName}</p>
         <p className="font-bold">{price.toLocaleString()}₮</p>
       </div>
     </div>
