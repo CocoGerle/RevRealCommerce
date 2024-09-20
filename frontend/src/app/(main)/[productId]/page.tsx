@@ -57,6 +57,8 @@ const Detail = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
+  const [hiddenComment, setHiddenComment] = useState(false);
+
   const toggleHeart = (id: string) => {
     if (!id) return;
     setHearts((prevHearts) => ({
@@ -108,6 +110,7 @@ const Detail = () => {
       setComment("");
       setRating(0);
       await getReview(productId);
+      getProduct(productId);
       console.log(response.data);
     } catch (error) {
       console.log("Review error");
@@ -281,7 +284,11 @@ const Detail = () => {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-col gap-6 bg-gray-100 rounded-lg p-6">
+              <div
+                className={`${
+                  hiddenComment === false ? "flex" : "hidden"
+                } flex flex-col gap-6 bg-gray-100 rounded-lg p-6`}
+              >
                 <div>
                   <div>Одоор үнэлэх:</div>
                   <div className="flex">
@@ -309,15 +316,15 @@ const Detail = () => {
                   </div>
                   <button
                     className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full"
-                    onClick={() =>
+                    onClick={() => {
                       createReview(
                         productId,
                         "66e90e7a9149b249fd1cf4d8",
-
                         comment,
                         rating
-                      )
-                    }
+                      );
+                      setHiddenComment(!hiddenComment);
+                    }}
                   >
                     Үнэлэх
                   </button>

@@ -5,13 +5,23 @@ export const getProductsFilteredByCategoryController: RequestHandler = async (
   req,
   res
 ) => {
+  // console.log(req.query.categoryId);
   try {
-    const products = await productModel
-      .find({ categoryId: req.params.id })
+    if (!req.query.categoryId) {
+      const allProducts = await productModel.find({}).populate("categoryId", {
+        name: 1,
+      });
+      return res.status(200).json({
+        allProducts,
+      });
+    }
+
+    const filteredByCategoryProducts = await productModel
+      .find({ categoryId: req.query.categoryId })
       .populate("categoryId");
 
     return res.status(200).json({
-      products,
+      allProducts: filteredByCategoryProducts,
     });
   } catch (error) {
     return res.status(500).json({
