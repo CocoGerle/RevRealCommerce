@@ -37,13 +37,41 @@ type ReviewType = {
   };
   rating: number;
 };
-const Detail = () => {
-  const context = useContext(ProductContext);
-  if (!context) {
-    return <div>Loading...</div>;
-  }
 
-  const { products } = context;
+interface Product {
+  _id: string;
+  productName: string;
+  categoryId: string[];
+  price: number;
+  size: string[];
+  qty: number;
+  images: string[];
+  thumbnils: string[];
+  salePercent: number;
+  description: string;
+  reviewCount: number;
+  averageRating: number;
+}
+
+const Detail = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const getProducts = async () => {
+    try {
+      const response = await api?.get("/product", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setProducts(response.data.allProducts);
+      console.log(response.data.allProducts);
+    } catch (error) {
+      return console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
   const [product, setProduct] = useState<ProductType>();
   console.log(product);
 
@@ -347,6 +375,7 @@ const Detail = () => {
                   price={item.price}
                   customHeight={customHeight}
                   index={index}
+                  id={item._id}
                 />
               </div>
             );

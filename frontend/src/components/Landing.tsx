@@ -1,19 +1,45 @@
 "use client";
 import Image from "next/image";
 import { Cards } from "./Cards";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ProductContext } from "./utils/context";
 import Link from "next/link";
+import { api } from "./lib/axios";
+
+interface Product {
+  _id: string;
+  productName: string;
+  categoryId: string[];
+  price: number;
+  size: string[];
+  qty: number;
+  images: string[];
+  thumbnils: string[];
+  salePercent: number;
+  description: string;
+  reviewCount: number;
+  averageRating: number;
+}
 
 export const Landing = () => {
-  const context = useContext(ProductContext);
+  const [products, setProducts] = useState<Product[]>([]);
+  const getProducts = async () => {
+    try {
+      const response = await api?.get("/product", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setProducts(response.data.allProducts);
+      console.log(response.data.allProducts);
+    } catch (error) {
+      return console.log(error);
+    }
+  };
 
-  if (!context) {
-    return <div>Loading...</div>;
-  }
-
-  const { products } = context;
-
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <div className="mb-[87px]">
       <div className="border max-w-screen-xl m-auto relative rounded-2xl overflow-hidden mt-[56px] mb-[32px]">
@@ -36,15 +62,16 @@ export const Landing = () => {
             index === 6 ? "764px" : index === 7 ? "764px" : "331px";
           return (
             <div key={index}>
-              <Link href={`${item._id}`}>
-                <Cards
-                  images={item.images}
-                  productName={item.productName}
-                  price={item.price}
-                  customHeight={customHeight}
-                  index={index}
-                />
-              </Link>
+              {/* <Link href={`${item._id}`}> */}
+              <Cards
+                images={item.images}
+                productName={item.productName}
+                price={item.price}
+                customHeight={customHeight}
+                index={index}
+                id={item._id}
+              />
+              {/* </Link> */}
             </div>
           );
         })}

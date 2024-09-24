@@ -3,7 +3,7 @@ import { Cards } from "@/components/Cards";
 import { api } from "@/components/lib/axios";
 import { useEffect, useState } from "react";
 
-// Define the type for categories
+// Define the types
 type CategoryType = {
   name: string;
   _id: string;
@@ -24,11 +24,16 @@ type ProductType = {
   averageRating: number;
 };
 
+// Available sizes
+const sizes = ["Free", "S", "M", "L", "XL", "2XL", "3XL"];
+
 const Category = () => {
   const [categories, setCategories] = useState<CategoryType[] | undefined>();
   const [products, setProducts] = useState<ProductType[]>();
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string[]>([]);
+  const [selectedSize, setSelectedSize] = useState<string>("All");
 
+  // Fetch categories from the backend
   const getCategories = async () => {
     try {
       const response = await api.get(`/category/`, {
@@ -37,35 +42,42 @@ const Category = () => {
         },
       });
       setCategories(response.data.categories);
-      console.log(response.data.categories);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getProducts = async (categoryId?: string) => {
+  // Fetch products from the backend, filtered by category and size
+  const getProducts = async () => {
     try {
-      const url = categoryId ? `/product?categoryId=${categoryId}` : `/product`;
-      const response = await api?.get(url, {
+      const categoryQuery =
+        selectedCategoryId.length > 0
+          ? `categoryId=${selectedCategoryId.join(",")}`
+          : "";
+      const sizeQuery = selectedSize !== "All" ? `&size=${selectedSize}` : "";
+      const query = `?${categoryQuery}${sizeQuery}`;
+
+      const response = await api.get(`/product${query}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+
       setProducts(response.data.allProducts);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Initial load of categories
   useEffect(() => {
     getCategories();
   }, []);
 
+  // Update products when category or size changes
   useEffect(() => {
-    if (selectedCategoryId) {
-      getProducts(selectedCategoryId);
-    }
-  }, [selectedCategoryId]);
+    getProducts();
+  }, [selectedCategoryId, selectedSize]);
 
   return (
     <div>
@@ -77,11 +89,25 @@ const Category = () => {
             <div className="flex flex-col gap-2 pt-4">
               {categories?.map((category) => (
                 <div
-                  onClick={() => setSelectedCategoryId(category._id)}
+                  onClick={() =>
+                    setSelectedCategoryId(
+                      (prev) =>
+                        prev.includes(category._id)
+                          ? prev.filter((id) => id !== category._id) // Remove if already selected
+                          : [...prev, category._id] // Add if not selected
+                    )
+                  }
                   key={category._id}
-                  className="cursor-pointer"
+                  className="flex items-center gap-2 cursor-pointer"
                 >
-                  {category.name}
+                  <input
+                    type="checkbox"
+                    checked={selectedCategoryId.includes(category._id)}
+                    onChange={() => {}} // Checkbox click handled by parent div onClick
+                  />{" "}
+                  <label className="text-[#09090B] text-[14px]">
+                    {category.name}
+                  </label>
                 </div>
               ))}
             </div>
@@ -90,13 +116,30 @@ const Category = () => {
           <div>
             <div className="font-bold">Хэмжээ</div>
             <div className="flex flex-col gap-2 pt-4">
-              <div>Free</div>
-              <div>S</div>
-              <div>M</div>
-              <div>L</div>
-              <div>XL</div>
-              <div>2XL</div>
-              <div>3XL</div>
+              {sizes.map((item, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  <input
+                    type="radio"
+                    id={`size-${item}`}
+                    name="size"
+                    value={item}
+                    checked={selectedSize === item}
+                    onChange={() => setSelectedSize(item)}
+                  />
+                  <label className="text-[#09090B] text-[14px]">{item}</label>
+                </div>
+              ))}
+              <div className="flex gap-2 items-center">
+                <input
+                  type="radio"
+                  id="size-all"
+                  name="size"
+                  value="All"
+                  checked={selectedSize === "All"}
+                  onChange={() => setSelectedSize("All")}
+                />
+                <label className="text-[#09090B] text-[14px]">All Sizes</label>
+              </div>
             </div>
           </div>
         </div>
@@ -111,6 +154,7 @@ const Category = () => {
                 price={item.price}
                 customHeight="290px"
                 index={index}
+                id={item._id}
               />
             </div>
           ))}
