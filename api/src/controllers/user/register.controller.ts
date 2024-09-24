@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { userModel } from "../../models/user.schema";
 
 export const register: RequestHandler = async (req, res) => {
-  const { userName, email, password, id, phoneNumber } = req.body;
+  const { userName, email, password, id } = req.body;
 
   if (!userName || !email || !password) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -19,7 +19,6 @@ export const register: RequestHandler = async (req, res) => {
       userName,
       email,
       password,
-      phoneNumber,
     });
 
     return res.status(201).json({
@@ -28,7 +27,6 @@ export const register: RequestHandler = async (req, res) => {
         id: newUser.id,
         userName: newUser.userName,
         email: newUser.email,
-        phoneNumber: newUser.phoneNumber,
       },
     });
   } catch (error) {

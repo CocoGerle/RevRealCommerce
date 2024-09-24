@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { FaStar } from "react-icons/fa";
 import Image from "next/image";
-import { ProductContext } from "@/components/utils/context";
+import { UserContext } from "@/components/utils/context";
 
 const totalStars = 5;
 
@@ -32,9 +32,7 @@ type ReviewType = {
   _id: string;
   productId: string;
   comment: string;
-  userId: {
-    userName: string;
-  };
+  userId: string;
   rating: number;
 };
 
@@ -55,6 +53,14 @@ interface Product {
 
 const Detail = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    return <div>Loading...</div>;
+  }
+
+  const { user } = userContext;
+
   const getProducts = async () => {
     try {
       const response = await api?.get("/product", {
@@ -126,15 +132,25 @@ const Detail = () => {
     productId: string,
     userId: string,
     comment: string,
-    rating: number
+    rating: number,
+    userName: string
   ) => {
     try {
-      const response = await api?.post("http://localhost:3001/review/", {
-        productId,
-        userId,
-        comment,
-        rating,
-      });
+      const response = await api?.post(
+        "http://localhost:3001/review/",
+        {
+          productId,
+          userId,
+          comment,
+          rating,
+          userName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       setComment("");
       setRating(0);
       await getReview(productId);
@@ -292,7 +308,7 @@ const Detail = () => {
                     className="border-gray-200 border-b border-dashed pt-6 pb-[21px]"
                   >
                     <div className="flex items-center gap-2">
-                      <div>{item?.userId.userName || "Unknown User"}</div>
+                      <div>{user?.name}</div>
                       <div className="flex">
                         {Array.from({ length: totalStars }, (_, starIndex) => (
                           <FaStar
@@ -345,12 +361,7 @@ const Detail = () => {
                   <button
                     className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full"
                     onClick={() => {
-                      createReview(
-                        productId,
-                        "66e90e7a9149b249fd1cf4d8",
-                        comment,
-                        rating
-                      );
+                      createReview(productId, user?.id, comment, rating);
                       setHiddenComment(!hiddenComment);
                     }}
                   >

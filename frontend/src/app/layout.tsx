@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { ProductContextProvider } from "@/components/utils/context";
+import { UserContextProvider } from "@/components/utils/context";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 
@@ -24,13 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ProductContextProvider>
+      <UserContextProvider>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <div>{children}</div>
         </body>
-      </ProductContextProvider>
+      </UserContextProvider>
     </html>
   );
 }

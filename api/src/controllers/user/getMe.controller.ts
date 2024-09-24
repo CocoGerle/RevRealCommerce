@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { userModel } from "../../models/user.schema";
 
 interface CustomRequest extends Request {
-  user?: { id: string }; // Adjust this to match your user structure
+  user?: { id: string };
 }
 
 export const getMe = async (req: CustomRequest, res: Response) => {
@@ -19,6 +19,8 @@ export const getMe = async (req: CustomRequest, res: Response) => {
       id: user._id,
       name: user.userName,
       email: user.email,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
       // Avahiig hussen datagaa bicij bolno
     };
 

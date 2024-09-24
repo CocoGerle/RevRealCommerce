@@ -1,60 +1,64 @@
 "use client";
 
 import { createContext, useState, ReactNode, FC, useEffect } from "react";
-import axios from "axios";
 import { api } from "../lib/axios";
+import { toast } from "react-toastify";
 
-interface Product {
-  _id: string;
-  productName: string;
-  categoryId: string[];
-  price: number;
-  size: string[];
-  qty: number;
-  images: string[];
-  thumbnils: string[];
-  salePercent: number;
-  description: string;
-  reviewCount: number;
-  averageRating: number;
+interface User {
+  name: string;
+  email: string;
+  id: string;
 }
 
-interface ProductContextType {
-  products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+interface UserContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  LogOut: () => void;
 }
 
-export const ProductContext = createContext<ProductContextType | null>(null);
+export const UserContext = createContext<UserContextType | null>(null);
 
-interface ProductContextProviderProps {
+interface UserContextProviderProps {
   children: ReactNode;
 }
 
-export const ProductContextProvider: FC<ProductContextProviderProps> = ({
+export const UserContextProvider: FC<UserContextProviderProps> = ({
   children,
 }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const getProducts = async () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const getUser = async () => {
     try {
-      const response = await api?.get("/product", {
+      const response = await api.get("/users/me", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setProducts(response.data.products);
-      console.log(response.data.products);
+      setUser(response.data);
+      console.log(response.data);
     } catch (error) {
-      return console.log(error);
+      console.error("Failed to fetch user data", error);
+    }
+  };
+
+  const LogOut = async () => {
+    try {
+      localStorage.removeItem("token");
+      setUser(null);
+      toast.success("You have been logged out successfully.");
+    } catch (error) {
+      console.error("Logout error", error);
+      toast.error("Log out failed.");
     }
   };
 
   useEffect(() => {
-    getProducts();
+    getUser();
   }, []);
 
   return (
-    <ProductContext.Provider value={{ products, setProducts }}>
+    <UserContext.Provider value={{ user, setUser, LogOut }}>
       {children}
-    </ProductContext.Provider>
+    </UserContext.Provider>
   );
 };
