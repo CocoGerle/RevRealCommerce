@@ -1,15 +1,11 @@
 "use client";
-import { ProductContext } from "@/components/utils/context";
+import { api } from "@/components/lib/axios";
+import { UserContext } from "@/components/utils/context";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 
 const Saved = () => {
-  const context = useContext(ProductContext);
-  if (!context) {
-    return <div>Loading...</div>;
-  }
-  const { product } = context;
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
   const toggleHeart = (index: number) => {
     setHearts((prevHearts) => ({
@@ -17,13 +13,22 @@ const Saved = () => {
       [index]: !prevHearts[index],
     }));
   };
+
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    return <div>Loading...</div>;
+  }
+
+  const { user } = userContext;
+
   return (
     <div className=" bg-[#f7f7f7] min-h-[66vh]">
       <div className="pt-[52px] w-[622px] m-auto">
         <h1 className="text-[20px] font-bold text-[#121316] mb-4">
           Хадгалсан бараа (3)
         </h1>
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           {product.slice(0, 3).map((item, index) => {
             return (
               <div key={index}>
@@ -57,7 +62,7 @@ const Saved = () => {
               </div>
             );
           })}
-        </div>
+        </div> */}
       </div>
     </div>
   );

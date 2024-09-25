@@ -8,6 +8,7 @@ interface User {
   name: string;
   email: string;
   id: string;
+  savedProduct: string[];
 }
 
 interface UserContextType {

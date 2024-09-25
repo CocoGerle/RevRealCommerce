@@ -21,6 +21,7 @@ export const getMe = async (req: CustomRequest, res: Response) => {
       email: user.email,
       phoneNumber: user.phoneNumber,
       address: user.address,
+      savedProduct: user.savedProduct,
       // Avahiig hussen datagaa bicij bolno
     };
 

@@ -93,13 +93,13 @@ const Detail = () => {
 
   const [hiddenComment, setHiddenComment] = useState(false);
 
-  const toggleHeart = (id: string) => {
-    if (!id) return;
-    setHearts((prevHearts) => ({
-      ...prevHearts,
-      [id]: !prevHearts[id],
-    }));
-  };
+  // const toggleHeart = (id: string) => {
+  //   if (!id) return;
+  //   setHearts((prevHearts) => ({
+  //     ...prevHearts,
+  //     [id]: !prevHearts[id],
+  //   }));
+  // };
 
   const [bgColor, setBgColor] = useState(0);
   const { productId } = useParams<IdType>();
@@ -209,13 +209,13 @@ const Detail = () => {
                 </div>
                 <div className="flex gap-2">
                   <div>Wildflower Hoodie</div>
-                  <div onClick={() => toggleHeart(product?._id)}>
+                  {/* <div onClick={() => toggleHeart(product?._id)}>
                     {hearts[product?._id] ? (
                       <GoHeartFill size={24} />
                     ) : (
                       <GoHeart size={24} />
                     )}
-                  </div>
+                  </div> */}
                 </div>
                 <div>{product?.description}</div>
               </div>
