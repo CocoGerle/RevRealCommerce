@@ -8,16 +8,33 @@ interface User {
   name: string;
   email: string;
   id: string;
-  savedProduct: string[];
+  savedProduct: product[];
+}
+interface product {
+  _id: string;
+  productName: string;
+  categoryId: string[];
+  price: number;
+  size: string[];
+  qty: number;
+  images: string[];
+  thumbnils: string[];
+  salePercent: number;
+  description: string;
+  reviewCount: number;
+  averageRating: number;
 }
 
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   LogOut: () => void;
+  getUser: () => void;
 }
 
-export const UserContext = createContext<UserContextType | null>(null);
+export const UserContext = createContext<UserContextType>(
+  {} as UserContextType
+);
 
 interface UserContextProviderProps {
   children: ReactNode;
@@ -58,7 +75,7 @@ export const UserContextProvider: FC<UserContextProviderProps> = ({
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, LogOut }}>
+    <UserContext.Provider value={{ user, setUser, LogOut, getUser }}>
       {children}
     </UserContext.Provider>
   );

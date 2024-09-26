@@ -11,7 +11,7 @@ export const getMe = async (req: CustomRequest, res: Response) => {
     if (!req.user || !req.user.id) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    const user = await userModel.findById(req.user.id);
+    const user = await userModel.findById(req.user.id).populate("savedProduct");
 
     if (!user) return res.status(404).json({ message: "User not found" });
 

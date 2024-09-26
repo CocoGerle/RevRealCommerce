@@ -7,64 +7,99 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 
 const Saved = () => {
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
-  const toggleHeart = (index: number) => {
+  const userContext = useContext(UserContext);
+  const { user, getUser } = userContext;
+
+  const toggleHeart = async (index: number, id: string) => {
     setHearts((prevHearts) => ({
       ...prevHearts,
       [index]: !prevHearts[index],
     }));
+
+    if (user) {
+      try {
+        const response = await api.post(
+          "http://localhost:3001/users",
+          {
+            userId: user.id,
+            productId: id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(response.data);
+        getUser(); // Refresh user data after the operation
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.log("User not logged in");
+    }
   };
 
-  const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-
-  const { user } = userContext;
+  useEffect(() => {
+    if (user && user.savedProduct) {
+      user.savedProduct.forEach((item, index) => {
+        const isLiked = item._id ? true : false; // Check if _id exists, it means it's liked
+        setHearts((prevHearts) => ({
+          ...prevHearts,
+          [index]: isLiked,
+        }));
+      });
+    }
+  }, [user]);
 
   return (
-    <div className=" bg-[#f7f7f7] min-h-[66vh]">
-      <div className="pt-[52px] w-[622px] m-auto">
-        <h1 className="text-[20px] font-bold text-[#121316] mb-4">
-          Хадгалсан бараа (3)
-        </h1>
-        {/* <div className="flex flex-col gap-4">
-          {product.slice(0, 3).map((item, index) => {
-            return (
-              <div key={index}>
-                <div className="flex gap-6 border p-4 rounded-2xl bg-[#FFFFFF] relative">
-                  <div className="w-[100px] h-[100px] relative rounded-2xl overflow-hidden">
-                    <Image
-                      style={{ objectFit: "cover" }}
-                      src={item.img}
-                      fill
-                      alt=""
-                    />
+    <div className="min-h-[70vh] bg-[#F7F7F8]">
+      <div className="w-[1280px] m-auto">
+        <div className="w-3/5 m-auto pt-[80px]">
+          <div className="flex gap-1 text-[20px]">
+            <div className="pb-4 font-bold">Хадгалсан бараа</div>
+            <div>({user?.savedProduct.length})</div>
+          </div>
+          <div className="flex flex-col gap-4 ">
+            {user?.savedProduct.map((item, index) => (
+              <div
+                key={item._id}
+                className="flex justify-between gap-6 bg-white rounded-2xl relative"
+              >
+                <div className="relative h-[120px] w-[120px]">
+                  <Image
+                    alt={item.productName}
+                    fill
+                    src={item.images[0]}
+                    className="object-cover rounded-xl"
+                  />
+                </div>
+                <div className="flex flex-col w-full justify-around">
+                  <div>{item.productName}</div>
+                  <div className="font-bold">
+                    {item.price.toLocaleString()}₮
                   </div>
-                  <div>
-                    <p>{item.title}</p>
-                    <p className="font-bold">{item.price.toLocaleString()}₮</p>
-                    <button className="py-[4px] px-[12px] bg-[#2563EB] text-white rounded-2xl mt-2">
-                      Сагслах
-                    </button>
-                  </div>
-                  <div
-                    onClick={() => toggleHeart(index)}
-                    className="absolute right-4 top-4 cursor-pointer"
-                  >
-                    {hearts[index] ? (
-                      <GoHeart size={24} />
-                    ) : (
-                      <GoHeartFill size={24} />
-                    )}
-                  </div>
+                  <button className="text-white bg-[#2563EB] w-fit py-2 px-3 rounded-full">
+                    Сагслах
+                  </button>
+                </div>
+                <div
+                  onClick={() => toggleHeart(index, item._id)}
+                  className="absolute right-4 top-4 cursor-pointer"
+                >
+                  {hearts[index] ? (
+                    <GoHeartFill size={24} />
+                  ) : (
+                    <GoHeart size={24} />
+                  )}
                 </div>
               </div>
-            );
-          })}
-        </div> */}
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
 export default Saved;

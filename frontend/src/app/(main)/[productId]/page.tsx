@@ -59,7 +59,7 @@ const Detail = () => {
     return <div>Loading...</div>;
   }
 
-  const { user } = userContext;
+  const { user, getUser } = userContext;
 
   const getProducts = async () => {
     try {
@@ -86,23 +86,58 @@ const Detail = () => {
 
   const [hiddenElement, setHiddenElement] = useState(false);
   const [count, setCount] = useState(0);
-  const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
   const [hiddenComment, setHiddenComment] = useState(false);
 
-  // const toggleHeart = (id: string) => {
-  //   if (!id) return;
-  //   setHearts((prevHearts) => ({
-  //     ...prevHearts,
-  //     [id]: !prevHearts[id],
-  //   }));
-  // };
-
   const [bgColor, setBgColor] = useState(0);
   const { productId } = useParams<IdType>();
+
+  const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
+
+  const toggleHeart = async (id: string) => {
+    setHearts((prevHearts) => ({
+      ...prevHearts,
+      [id]: !prevHearts[id],
+    }));
+
+    if (user) {
+      try {
+        const response = await api.post(
+          "http://localhost:3001/users",
+          {
+            userId: user.id,
+            productId: id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(response.data);
+        getUser(); // Refresh user data after the operation
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.log("User not logged in");
+    }
+  };
+
+  useEffect(() => {
+    if (user && user.savedProduct) {
+      user.savedProduct.forEach((item, index) => {
+        const isLiked = item._id ? true : false;
+        setHearts((prevHearts) => ({
+          ...prevHearts,
+          [index]: isLiked,
+        }));
+      });
+    }
+  }, [user]);
 
   const getProduct = async (productId: string) => {
     try {
@@ -208,14 +243,14 @@ const Detail = () => {
                   ШИНЭ
                 </div>
                 <div className="flex gap-2">
-                  <div>Wildflower Hoodie</div>
-                  {/* <div onClick={() => toggleHeart(product?._id)}>
-                    {hearts[product?._id] ? (
+                  <div>{product?.productName}</div>
+                  <div onClick={() => toggleHeart(product?._id)}>
+                    {product && hearts[product._id] ? (
                       <GoHeartFill size={24} />
                     ) : (
                       <GoHeart size={24} />
                     )}
-                  </div> */}
+                  </div>
                 </div>
                 <div>{product?.description}</div>
               </div>
@@ -397,3 +432,23 @@ const Detail = () => {
   );
 };
 export default Detail;
+
+// {
+//   /* <div className="grid grid-cols-4 gap-x-5 gap-y-12">
+// {products.slice(0, 8).map((item, index) => {
+//   const customHeight = "331px";
+//   return (
+//     <div key={index}>
+//       <Cards
+//         images={item.images}
+//         productName={item.productName}
+//         price={item.price}
+//         customHeight={customHeight}
+//         index={index}
+//         id={item._id}
+//       />
+//     </div>
+//   );
+// })}
+// </div> */
+// }

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { UserContext } from "./utils/context";
 import { api } from "./lib/axios";
@@ -25,32 +25,49 @@ export const Cards: React.FC<MyComponentProps> = ({
 }) => {
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
   const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-
-  const { user } = userContext;
+  const { user, getUser } = userContext;
 
   const toggleHeart = async (index: number) => {
     setHearts((prevHearts) => ({
       ...prevHearts,
       [index]: !prevHearts[index],
     }));
-    try {
-      const response = await api?.post("http://localhost:3001/users/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.log(" error");
-      console.log(error);
+    if (user) {
+      try {
+        const response = await api.post(
+          "http://localhost:3001/users",
+          {
+            userId: user.id,
+            productId: id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(response.data);
+        getUser();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.log("User not logged in");
     }
   };
 
-  console.log(hearts);
+  useEffect(() => {
+    if (user && user.savedProduct) {
+      const isLiked = user.savedProduct.some(
+        (item) => item._id && item._id.toString() === id
+      );
+      setHearts((prevHearts) => ({
+        ...prevHearts,
+        [index]: isLiked,
+      }));
+    }
+  }, [user, id, index]);
+
   return (
     <div>
       <div
