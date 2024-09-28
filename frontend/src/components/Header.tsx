@@ -42,7 +42,18 @@ export const Header = () => {
       </div>
       <div className="flex gap-[24px] items-center">
         <Link href={`saved`}>
-          <FiHeart size={24} />
+          <div className="relative h-6">
+            <div
+              className={`${
+                user?.savedProduct.length
+                  ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
+                  : "hidden"
+              }   `}
+            >
+              {user?.savedProduct.length}
+            </div>
+            <FiHeart size={24} />
+          </div>
         </Link>
         <FiShoppingCart size={24} />
         <Link href={`userInfo`}>

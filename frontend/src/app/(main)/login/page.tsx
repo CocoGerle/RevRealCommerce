@@ -57,9 +57,11 @@ const Login = () => {
             >
               Нэвтрэх
             </button>
-            <div className="text-[#71717A] underline text-sm self-center">
-              Нууц үг мартсан
-            </div>
+            <Link href={`/forgotPassword`}>
+              <div className="text-[#71717A] underline text-sm self-center">
+                Нууц үг мартсан
+              </div>
+            </Link>
           </div>
           <div className="w-1/2">
             <Link href={`/register`}>

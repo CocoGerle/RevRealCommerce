@@ -60,13 +60,13 @@ const Saved = () => {
             <div className="pb-4 font-bold">Хадгалсан бараа</div>
             <div>({user?.savedProduct.length})</div>
           </div>
-          <div className="flex flex-col gap-4 ">
+          <div className="flex flex-col gap-4  ">
             {user?.savedProduct.map((item, index) => (
               <div
                 key={item._id}
-                className="flex justify-between gap-6 bg-white rounded-2xl relative"
+                className="flex justify-between gap-6 bg-white rounded-2xl relative p-4"
               >
-                <div className="relative h-[120px] w-[120px]">
+                <div className="relative h-[100px] w-[100px]">
                   <Image
                     alt={item.productName}
                     fill
@@ -79,7 +79,7 @@ const Saved = () => {
                   <div className="font-bold">
                     {item.price.toLocaleString()}₮
                   </div>
-                  <button className="text-white bg-[#2563EB] w-fit py-2 px-3 rounded-full">
+                  <button className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full">
                     Сагслах
                   </button>
                 </div>

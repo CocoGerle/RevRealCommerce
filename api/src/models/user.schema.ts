@@ -33,6 +33,12 @@ const userSchema = new Schema({
     ref: "Product",
     required: false,
   },
+  resetPassword: {
+    type: String,
+  },
+  resetPasswordExpire: {
+    type: Date,
+  },
   createdAt: {
     type: Date,
     required: true,
