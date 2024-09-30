@@ -95,49 +95,7 @@ const Detail = () => {
   const [bgColor, setBgColor] = useState(0);
   const { productId } = useParams<IdType>();
 
-  // const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
-
-  // const toggleHeart = async (id: string) => {
-  //   setHearts((prevHearts) => ({
-  //     ...prevHearts,
-  //     [id]: !prevHearts[id],
-  //   }));
-
-  //   if (user) {
-  //     try {
-  //       const response = await api.post(
-  //         "http://localhost:3001/users",
-  //         {
-  //           userId: user.id,
-  //           productId: id,
-  //         },
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //           },
-  //         }
-  //       );
-  //       console.log(response.data);
-  //       getUser(); // Refresh user data after the operation
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   } else {
-  //     console.log("User not logged in");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (user && user.savedProduct) {
-  //     user.savedProduct.forEach((item, index) => {
-  //       const isLiked = item._id ? true : false;
-  //       setHearts((prevHearts) => ({
-  //         ...prevHearts,
-  //         [index]: isLiked,
-  //       }));
-  //     });
-  //   }
-  // }, [user]);
+  const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
 
   const getProduct = async (productId: string) => {
     try {
@@ -245,7 +203,7 @@ const Detail = () => {
                 <div className="flex gap-2">
                   <div>{product?.productName}</div>
                   {/* <div onClick={() => toggleHeart(product?._id)}>
-                    {product && hearts[product._id] ? (
+                    {product?._id && hearts[product._id] ? (
                       <GoHeartFill size={24} />
                     ) : (
                       <GoHeart size={24} />

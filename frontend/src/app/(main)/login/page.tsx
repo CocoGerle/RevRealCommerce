@@ -1,15 +1,23 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { api } from "@/components/lib/axios";
+import { UserContext } from "@/components/utils/context";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState();
+
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    return <div>Loading...</div>;
+  }
+
+  const { user, setUser } = userContext;
 
   const login = async (email: string, password: string) => {
     try {
@@ -18,10 +26,9 @@ const Login = () => {
         password,
       });
       localStorage.setItem("token", response.data.token); //Localstorage deer token-r SETelne./browser deer hadgalagdsn/
-      setUser(response.data);
-
+      setUser(response.data.user);
       console.log(response.data);
-      router.replace("/");
+      router.push("/");
     } catch (error) {
       console.log(error);
     }

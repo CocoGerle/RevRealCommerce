@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { userModel } from "../../models/user.schema";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import main from "../../utils/email";
+// import main from "../../utils/email";
 import nodemailer from "nodemailer"; // Assuming you are using nodemailer for sending emails
 
 export const forgotPassword: RequestHandler = async (req, res) => {

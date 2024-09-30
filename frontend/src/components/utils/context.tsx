@@ -9,6 +9,8 @@ interface User {
   email: string;
   id: string;
   savedProduct: product[];
+  address: string;
+  phoneNumber: number;
 }
 interface product {
   _id: string;

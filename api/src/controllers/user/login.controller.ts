@@ -37,9 +37,12 @@ export const Login: RequestHandler = async (req, res) => {
     res.json({
       token,
       user: {
-        userName: user.userName,
+        id: user._id,
+        name: user.userName,
         email: user.email,
-        id: user.id,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+        savedProduct: user.savedProduct,
       },
     });
   } catch (error) {

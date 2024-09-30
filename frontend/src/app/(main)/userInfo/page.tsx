@@ -2,12 +2,8 @@
 import { api } from "@/components/lib/axios";
 import { UserContext } from "@/components/utils/context";
 import { useContext, useEffect, useState } from "react";
-type UserType = {
-  name: string;
-  phoneNumber: string;
-  gmail: string;
-  address: string;
-};
+import { toast } from "react-toastify";
+
 const UserInfo = () => {
   const userContext = useContext(UserContext);
 
@@ -15,7 +11,42 @@ const UserInfo = () => {
     return <div>Loading...</div>;
   }
 
-  const { user } = userContext;
+  const { user, setUser, getUser } = userContext;
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+
+  const updateUser = async () => {
+    try {
+      const updatedUser = {
+        name: name,
+        phoneNumber: phoneNumber,
+        email: email,
+        address: address,
+      };
+      const response = await api.put(`/users/update`, updatedUser, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setUser(response.data.user);
+      toast.success(response.data.message);
+      console.log(response.data.user);
+      getUser();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("User,", user);
+    setName(user?.name);
+    setAddress(user?.address);
+    setEmail(user?.email);
+    setPhoneNumber(user?.phoneNumber);
+  }, [user]);
 
   return (
     <div className="bg-[#f7f7f7] min-h-[66vh]">
@@ -37,33 +68,40 @@ const UserInfo = () => {
                 <p>Нэр: </p>
                 <input
                   className="rounded-2xl w-[100%] py-1 px-3 text-[#71717A] shadow-sm border border-[#E4E4E7]"
-                  placeholder={user?.name}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
               <div>
                 <p>Утасны дугаар:</p>
                 <input
                   className="rounded-2xl w-[100%] py-1 px-3 text-[#71717A] shadow-sm border border-[#E4E4E7]"
-                  placeholder={user?.phoneNumber}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </div>
               <div>
                 <p>Имэйл хаяг:</p>
                 <input
                   className="rounded-2xl w-[100%] py-1 px-3 text-[#71717A] shadow-sm border border-[#E4E4E7]"
-                  placeholder={user?.email}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
                 <p>Хаяг</p>
                 <input
                   className="rounded-2xl w-[100%] h-32 py-1 px-3 text-[#71717A] shadow-sm border border-[#E4E4E7]"
-                  placeholder={user?.address}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
                 />
               </div>
             </div>
             <div className=" flex justify-end mt-4">
-              <button className="text-white bg-[#2563EB] py-2 px-9 rounded-full">
+              <button
+                className="text-white bg-[#2563EB] py-2 px-9 rounded-full"
+                onClick={updateUser}
+              >
                 Мэдээлэл шинэчлэх
               </button>
             </div>
@@ -73,4 +111,5 @@ const UserInfo = () => {
     </div>
   );
 };
+
 export default UserInfo;

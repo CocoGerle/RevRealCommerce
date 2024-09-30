@@ -70,7 +70,7 @@ const Saved = () => {
                   <Image
                     alt={item.productName}
                     fill
-                    src={item.images[0]}
+                    src={item?.images[0]}
                     className="object-cover rounded-xl"
                   />
                 </div>
