@@ -63,7 +63,7 @@ export const Header = () => {
     }
   }, [search, products]);
 
-  console.log(products);
+  // console.log(products);
 
   return (
     <header className="bg-black py-[16px] px-[24px] flex justify-between text-white">
@@ -134,8 +134,10 @@ export const Header = () => {
             <FiHeart size={24} />
           </div>
         </Link>
-        <FiShoppingCart size={24} />
-        <Link href={`userInfo`}>
+        <Link href={`/buysteps/cart`}>
+          <FiShoppingCart size={24} />
+        </Link>
+        <Link href={`/userInfo`}>
           <FiUser size={24} />
         </Link>
         <div className={user ? "hidden" : `flex gap-2 items-center`}>

@@ -53,6 +53,7 @@ interface Product {
 
 const Detail = () => {
   const [products, setProducts] = useState<Product[]>([]);
+
   const userContext = useContext(UserContext);
 
   if (!userContext) {
@@ -72,6 +73,30 @@ const Detail = () => {
       console.log(response.data.allProducts);
     } catch (error) {
       return console.log(error);
+    }
+  };
+
+  const [sizeChange, setSizeChange] = useState("");
+
+  const buyProduct = async () => {
+    try {
+      const response = await api.post(
+        `http://localhost:3001/cart`,
+        {
+          userId: user?.id,
+          quantity: count,
+          cartProduct: productId,
+          size: sizeChange,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -222,7 +247,10 @@ const Detail = () => {
                     return (
                       <div
                         key={index}
-                        onClick={() => setBgColor(index)}
+                        onClick={() => {
+                          setBgColor(index);
+                          setSizeChange;
+                        }}
                         className={`flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer hover:bg-slate-300 ${
                           bgColor === index ? "bg-black text-white " : ""
                         }`}
@@ -253,7 +281,10 @@ const Detail = () => {
               <div className="font-bold text-[20px] pb-2">
                 {product?.price.toLocaleString()}₮
               </div>
-              <button className="text-white bg-[#2563EB] py-2 px-9 rounded-full">
+              <button
+                className="text-white bg-[#2563EB] py-2 px-9 rounded-full"
+                onClick={buyProduct}
+              >
                 Сагсанд нэмэх
               </button>
             </div>
@@ -391,23 +422,3 @@ const Detail = () => {
   );
 };
 export default Detail;
-
-// {
-//   /* <div className="grid grid-cols-4 gap-x-5 gap-y-12">
-// {products.slice(0, 8).map((item, index) => {
-//   const customHeight = "331px";
-//   return (
-//     <div key={index}>
-//       <Cards
-//         images={item.images}
-//         productName={item.productName}
-//         price={item.price}
-//         customHeight={customHeight}
-//         index={index}
-//         id={item._id}
-//       />
-//     </div>
-//   );
-// })}
-// </div> */
-// }

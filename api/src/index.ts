@@ -12,6 +12,7 @@ import {
   userRouter,
 } from "./routes";
 import authMiddleware from "./controllers/middlewares/auth.middleware";
+import { cartRouter } from "./routes/cart.router";
 
 connectToDataBase();
 
@@ -32,6 +33,7 @@ app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/review", reviewRouter);
 app.use("/order", orderRouter);
+app.use("/cart", cartRouter);
 
 app.listen(3001, () => {
   console.log("server is running on http://localhost:3001");
