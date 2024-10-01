@@ -47,19 +47,20 @@ export const Header = () => {
       return console.log(error);
     }
   };
-  // const searchedProducts = products.filter((item) =>
-  //   item.productName.toLowerCase().includes(search.toLowerCase())
-  // );
 
   useEffect(() => {
     getProducts();
   }, []);
 
   useEffect(() => {
-    const filtered = products.filter((item) =>
-      item.productName.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilteredProducts(filtered);
+    if (search.length > 0 && products) {
+      const filtered = products.filter((product) =>
+        product.productName.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts([]);
+    }
   }, [search, products]);
 
   console.log(products);
@@ -85,13 +86,19 @@ export const Header = () => {
       <div className="relative w-[601px]">
         <div className=" w-full flex items-center justify-center">
           <input
-            className="pl-20 bg-[#18181B] py-2 px-4 rounded-md outline-none w-[300px] "
+            className="pl-20 bg-[#18181B] py-2 px-4 rounded-md outline-none w-[300px]"
             placeholder="Бүтээгдэхүүн хайх"
             onChange={(event) => setSearch(event?.target.value)}
             value={search}
           />
-          <FiSearch className="absolute w-6 h-6 top-2 left-48" />
+          <FiSearch className="absolute w-6 h-6 top-2 left-48 text-[#9ca3ab]" />
         </div>
+        {filteredProducts.length === 0 && search && (
+          <div className="absolute bg-white text-black w-full mt-1 p-2 shadow-md rounded-lg z-20">
+            No products found
+          </div>
+        )}
+
         {filteredProducts.length > 0 && (
           <div className="absolute bg-white text-black w-full mt-1 max-h-64 overflow-y-auto shadow-md rounded-lg z-20">
             {filteredProducts.map((product) => (

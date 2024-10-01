@@ -109,6 +109,7 @@ const Detail = () => {
       return console.log(error);
     }
   };
+
   const getReview = async (productId: string) => {
     try {
       const response = await api?.get(`/review/${productId}`, {
@@ -301,7 +302,7 @@ const Detail = () => {
                     className="border-gray-200 border-b border-dashed pt-6 pb-[21px]"
                   >
                     <div className="flex items-center gap-2">
-                      <div>{user?.name}</div>
+                      <div>{item.userId?.userName}</div>
                       <div className="flex">
                         {Array.from({ length: totalStars }, (_, starIndex) => (
                           <FaStar
