@@ -28,15 +28,16 @@ export const Cart = () => {
         params: { userId },
       });
       setCarts(res.data.carts);
-      console.log(res.data.carts);
     } catch (error) {
       console.log(error);
     }
   };
 
+  console.log(carts);
+
   const deleteCart = async (cartId: string) => {
     try {
-      const res = await api.delete(`/cart`, {
+      const res = await api.delete(`/cart/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -52,8 +53,8 @@ export const Cart = () => {
     if (user?.id) {
       getCarts(user.id);
     }
-    getUser();
-  }, [carts]);
+    // getUser();
+  }, [user]);
 
   useEffect(() => {
     const totalPrice = carts.reduce((acc, item) => {
@@ -61,6 +62,8 @@ export const Cart = () => {
     }, 0);
     setTotalPrice(totalPrice);
   }, [carts]);
+
+  console.log(carts);
 
   return (
     <div>

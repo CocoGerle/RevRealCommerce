@@ -117,7 +117,8 @@ const Detail = () => {
 
   const [hiddenComment, setHiddenComment] = useState(false);
 
-  const [bgColor, setBgColor] = useState(0);
+  const [bgColor, setBgColor] = useState(6);
+
   const { productId } = useParams<IdType>();
 
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
@@ -251,8 +252,10 @@ const Detail = () => {
                           setBgColor(index);
                           setSizeChange;
                         }}
-                        className={`flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer hover:bg-slate-300 ${
-                          bgColor === index ? "bg-black text-white " : ""
+                        className={`flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer ${
+                          bgColor === index
+                            ? "bg-black text-white "
+                            : "bg-white"
                         }`}
                       >
                         {item}
@@ -263,14 +266,14 @@ const Detail = () => {
               </div>
               <div className="flex items-center gap-4">
                 <div
-                  className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
+                  className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
                   onClick={() => setCount((prev) => (prev > 0 ? prev - 1 : 0))}
                 >
                   -
                 </div>
                 <div>{count}</div>
                 <div
-                  className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
+                  className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
                   onClick={() => setCount((prev) => prev + 1)}
                 >
                   +

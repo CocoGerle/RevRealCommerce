@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { api } from "./lib/axios";
 
 interface AddressCardProps {
   item: {
@@ -19,6 +20,8 @@ export const DeliveryCard: React.FC<AddressCardProps> = ({
   deleteCart,
 }) => {
   const [count, setCount] = useState(qty);
+
+  console.log(item.productName);
 
   return (
     <div className="flex justify-between gap-6">

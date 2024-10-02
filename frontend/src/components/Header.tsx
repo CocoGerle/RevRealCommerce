@@ -65,6 +65,28 @@ export const Header = () => {
 
   // console.log(products);
 
+  const [carts, setCarts] = useState<any[]>([]);
+
+  const getCarts = async (userId: string) => {
+    try {
+      const res = await api.get(`/cart/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        params: { userId },
+      });
+      setCarts(res.data.carts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      getCarts(user.id);
+    }
+  }, [user]);
+
   return (
     <header className="bg-black py-[16px] px-[24px] flex justify-between text-white">
       <div className="flex gap-[16px] items-center">
@@ -120,7 +142,7 @@ export const Header = () => {
         )}
       </div>
       <div className="flex gap-[24px] items-center">
-        <Link href={`saved`}>
+        <Link href={`/saved`}>
           <div className="relative h-6">
             <div
               className={`${
@@ -135,7 +157,18 @@ export const Header = () => {
           </div>
         </Link>
         <Link href={`/buysteps/cart`}>
-          <FiShoppingCart size={24} />
+          <div className="relative h-6">
+            <div
+              className={`${
+                carts?.length
+                  ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
+                  : "hidden"
+              }   `}
+            >
+              {carts?.length}
+            </div>
+            <FiShoppingCart size={24} />
+          </div>
         </Link>
         <Link href={`/userInfo`}>
           <FiUser size={24} />
