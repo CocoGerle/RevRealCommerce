@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { FiSearch, FiHeart, FiShoppingCart, FiUser } from "react-icons/fi";
 import { UserContext } from "./utils/context";
 import { api } from "./lib/axios";
+import { useCart } from "./utils/CartProvider";
 
 interface Product {
   _id: string;
@@ -23,12 +24,14 @@ interface Product {
 
 export const Header = () => {
   const userContext = useContext(UserContext);
-
   if (!userContext) {
     return <div>Loading...</div>;
   }
-
   const { user, LogOut } = userContext;
+
+  const { cart } = useCart();
+  const userId = user?.id;
+  const userCart = cart.filter((item) => item.userId === userId);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -42,7 +45,6 @@ export const Header = () => {
         },
       });
       setProducts(response.data.allProducts);
-      console.log(response.data.allProducts);
     } catch (error) {
       return console.log(error);
     }
@@ -64,28 +66,6 @@ export const Header = () => {
   }, [search, products]);
 
   // console.log(products);
-
-  const [carts, setCarts] = useState<any[]>([]);
-
-  const getCarts = async (userId: string) => {
-    try {
-      const res = await api.get(`/cart/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        params: { userId },
-      });
-      setCarts(res.data.carts);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (user?.id) {
-      getCarts(user.id);
-    }
-  }, [carts]);
 
   return (
     <header className="bg-black py-[16px] px-[24px] flex justify-between text-white">
@@ -160,12 +140,12 @@ export const Header = () => {
           <div className="relative h-6">
             <div
               className={`${
-                carts?.length
+                userCart?.length
                   ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
                   : "hidden"
               }   `}
             >
-              {carts?.length}
+              {userCart?.length}
             </div>
             <FiShoppingCart size={24} />
           </div>

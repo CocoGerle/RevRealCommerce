@@ -7,6 +7,8 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { FaStar } from "react-icons/fa";
 import Image from "next/image";
 import { UserContext } from "@/components/utils/context";
+import { useCart } from "@/components/utils/CartProvider";
+import Link from "next/link";
 
 const totalStars = 5;
 
@@ -52,6 +54,7 @@ interface Product {
 }
 
 const Detail = () => {
+  const { addProductToCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
 
   const userContext = useContext(UserContext);
@@ -78,28 +81,28 @@ const Detail = () => {
 
   const [sizeChange, setSizeChange] = useState("");
 
-  const buyProduct = async () => {
-    try {
-      const response = await api.post(
-        `http://localhost:3001/cart`,
-        {
-          userId: user?.id,
-          quantity: count,
-          cartProduct: productId,
-          size: sizeChange,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+  // const buyProduct = async () => {
+  //   try {
+  //     const response = await api.post(
+  //       `http://localhost:3001/cart`,
+  //       {
+  //         userId: user?.id,
+  //         quantity: count,
+  //         cartProduct: productId,
+  //         size: sizeChange,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
 
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     getProducts();
@@ -285,9 +288,10 @@ const Detail = () => {
               <div className="font-bold text-[20px] pb-2">
                 {product?.price.toLocaleString()}₮
               </div>
+
               <button
                 className="text-white bg-[#2563EB] py-2 px-9 rounded-full"
-                onClick={buyProduct}
+                onClick={() => addProductToCart(product)}
               >
                 Сагсанд нэмэх
               </button>

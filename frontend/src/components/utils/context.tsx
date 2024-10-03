@@ -55,7 +55,7 @@ export const UserContextProvider: FC<UserContextProviderProps> = ({
         },
       });
       setUser(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch user data", error);
     }

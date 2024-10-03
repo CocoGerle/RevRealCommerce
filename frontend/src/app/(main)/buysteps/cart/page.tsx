@@ -1,69 +1,37 @@
 "use client";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
-
-import { DeliveryCard } from "@/components/DeliveryCard";
 import { UserContext } from "@/components/utils/context";
-import { api } from "@/components/lib/axios";
+import { useCart } from "@/components/utils/CartProvider";
+import { FaRegTrashCan } from "react-icons/fa6";
+import Image from "next/image";
 
 export const Cart = () => {
+  // get user
   const userContext = useContext(UserContext);
-
   if (!userContext) {
     return <div>Loading...</div>;
   }
+  const { user } = userContext;
 
-  const { user, getUser } = userContext;
-  console.log(user);
+  const {
+    cart,
+    removeProductFromCart,
+    increaseProductQuantity,
+    decreaseProductQuantity,
+  } = useCart();
 
-  const [carts, setCarts] = useState<any[]>([]);
+  const userId = user?.id;
+  const userCart = cart.filter((item) => item.userId === userId);
+
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  const getCarts = async (userId: string) => {
-    try {
-      const res = await api.get(`/cart/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        params: { userId },
-      });
-      setCarts(res.data.carts);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  console.log(carts);
-
-  const deleteCart = async (cartId: string) => {
-    try {
-      const res = await api.delete(`/cart/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        params: { cartId },
-      });
-      setCarts((prevCarts) => prevCarts.filter((item) => item._id !== cartId));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    if (user?.id) {
-      getCarts(user.id);
-    }
-    // getUser();
-  }, [user]);
-
-  useEffect(() => {
-    const totalPrice = carts.reduce((acc, item) => {
-      return acc + item.cartProduct.price * item.quantity;
+    const totalPrice = userCart.reduce((acc, item) => {
+      return acc + item.product.price * item.quantity;
     }, 0);
     setTotalPrice(totalPrice);
-  }, [carts]);
-
-  console.log(carts);
+  }, [userCart]);
 
   return (
     <div>
@@ -80,19 +48,49 @@ export const Cart = () => {
         <div className="p-8 bg-gray-100 rounded-xl">
           <div className="flex gap-1 pb-6">
             <div>1. Сагс </div>
-            <div>({carts.length})</div>
+            <div>({userCart.length})</div>
           </div>
           <div className="flex flex-col gap-6">
-            {carts.map((item, index) => {
-              return (
-                <DeliveryCard
-                  key={index}
-                  item={item.cartProduct}
-                  qty={item.quantity}
-                  deleteCart={() => deleteCart(item._id)}
-                />
-              );
-            })}
+            {userCart.map(({ product, quantity }) => (
+              <div className="flex justify-between gap-6" key={product._id}>
+                <div className="relative h-[120px] w-[120px]">
+                  <Image
+                    alt=""
+                    fill
+                    src={product.images[0]}
+                    className="object-cover rounded-xl"
+                  />
+                </div>
+                <div className="flex flex-col justify-between w-full">
+                  <div>
+                    <div className="pb-1">{product.productName}</div>
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
+                        onClick={() => decreaseProductQuantity(product)}
+                      >
+                        -
+                      </div>
+                      <div>{quantity}</div>
+                      <div
+                        className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
+                        onClick={() => increaseProductQuantity(product)}
+                      >
+                        +
+                      </div>
+                    </div>
+                  </div>
+                  <div className="font-bold">
+                    {(quantity * product.price).toLocaleString()}₮
+                  </div>
+                </div>
+                <div className="p-4 cursor-pointer">
+                  <FaRegTrashCan
+                    onClick={() => removeProductFromCart(product)}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
           <div className="flex flex-col gap-12">
             <div className="flex justify-between pt-6">
