@@ -32,7 +32,7 @@ import { cartModel } from "../../models/cart.schema";
 export const getCartsController: RequestHandler = async (req, res) => {
   try {
     const { userId } = req.query;
-    console.log(userId, "user Id shvv ----");
+    // console.log(userId, "user Id shvv ----");
     const carts = await cartModel.find({ userId }).populate("cartProduct");
     return res.status(201).json({
       carts,

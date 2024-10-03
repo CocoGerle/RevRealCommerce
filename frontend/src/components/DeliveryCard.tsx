@@ -21,8 +21,6 @@ export const DeliveryCard: React.FC<AddressCardProps> = ({
 }) => {
   const [count, setCount] = useState(qty);
 
-  console.log(item.productName);
-
   return (
     <div className="flex justify-between gap-6">
       <div className="relative h-[120px] w-[120px]">

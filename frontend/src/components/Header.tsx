@@ -85,7 +85,7 @@ export const Header = () => {
     if (user?.id) {
       getCarts(user.id);
     }
-  }, [user]);
+  }, [carts]);
 
   return (
     <header className="bg-black py-[16px] px-[24px] flex justify-between text-white">

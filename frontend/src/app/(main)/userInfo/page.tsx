@@ -12,7 +12,7 @@ const UserInfo = () => {
   }
 
   const { user, setUser, getUser } = userContext;
-  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
@@ -20,7 +20,7 @@ const UserInfo = () => {
   const updateUser = async () => {
     try {
       const updatedUser = {
-        name: name,
+        userName: userName,
         phoneNumber: phoneNumber,
         email: email,
         address: address,
@@ -42,7 +42,7 @@ const UserInfo = () => {
 
   useEffect(() => {
     console.log("User,", user);
-    setName(user?.name);
+    setUserName(user?.userName);
     setAddress(user?.address);
     setEmail(user?.email);
     setPhoneNumber(user?.phoneNumber);
@@ -68,8 +68,8 @@ const UserInfo = () => {
                 <p>Нэр: </p>
                 <input
                   className="rounded-2xl w-[100%] py-1 px-3 text-[#71717A] shadow-sm border border-[#E4E4E7]"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
                 />
               </div>
               <div>

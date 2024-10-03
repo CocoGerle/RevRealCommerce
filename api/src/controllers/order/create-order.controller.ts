@@ -2,6 +2,8 @@ import { RequestHandler } from "express";
 import { orderModel } from "../../models/order.schema";
 
 export const CreateOrder: RequestHandler = async (req, res) => {
+  console.log(req.body);
+
   try {
     await orderModel.create({
       ...req.body,
@@ -13,7 +15,7 @@ export const CreateOrder: RequestHandler = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Intervel server error",
+      message: "Intervel server error order create",
       error,
     });
   }

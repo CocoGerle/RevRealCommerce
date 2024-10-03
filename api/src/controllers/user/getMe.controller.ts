@@ -17,7 +17,7 @@ export const getMe = async (req: CustomRequest, res: Response) => {
 
     const userData = {
       id: user._id,
-      name: user.userName,
+      userName: user.userName,
       email: user.email,
       phoneNumber: user.phoneNumber,
       address: user.address,
