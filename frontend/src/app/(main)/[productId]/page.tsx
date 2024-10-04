@@ -55,6 +55,7 @@ interface Product {
 
 const Detail = () => {
   const { addProductToCart } = useCart();
+
   const [products, setProducts] = useState<Product[]>([]);
 
   const userContext = useContext(UserContext);
@@ -79,7 +80,11 @@ const Detail = () => {
     }
   };
 
-  const [sizeChange, setSizeChange] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+
+  const handleSizeSelection = (size: string) => {
+    setSelectedSize(size);
+  };
 
   // const buyProduct = async () => {
   //   try {
@@ -114,7 +119,7 @@ const Detail = () => {
   const [currentImage, setCurrentImage] = useState<number>(0);
 
   const [hiddenElement, setHiddenElement] = useState(false);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -254,7 +259,7 @@ const Detail = () => {
                         key={index}
                         onClick={() => {
                           setBgColor(index);
-                          setSizeChange;
+                          setSelectedSize(item);
                         }}
                         className={`flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer ${
                           bgColor === index
@@ -291,7 +296,13 @@ const Detail = () => {
 
               <button
                 className="text-white bg-[#2563EB] py-2 px-9 rounded-full"
-                onClick={() => addProductToCart(product)}
+                onClick={() => {
+                  if (!selectedSize) {
+                    alert("Please select a size before adding to the cart.");
+                    return;
+                  }
+                  addProductToCart(product, selectedSize);
+                }}
               >
                 Сагсанд нэмэх
               </button>

@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 import { UserContext } from "./context";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export type Product = {
   _id: string;
@@ -26,15 +28,17 @@ export type Product = {
 type CartProduct = {
   product: Product;
   quantity: number;
-  userId: string; // Ensure to include userId
+  selectedSize: string;
+  userId: string;
 };
 
 type CartContextType = {
   cart: CartProduct[];
-  addProductToCart: (product: Product) => void;
-  removeProductFromCart: (product: Product) => void;
-  increaseProductQuantity: (product: Product) => void;
-  decreaseProductQuantity: (product: Product) => void;
+  addProductToCart: (product: Product, size: string) => void;
+  removeProductFromCart: (product: Product, size: string) => void;
+  increaseProductQuantity: (product: Product, size: string) => void;
+  decreaseProductQuantity: (product: Product, size: string) => void;
+  clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextType>({} as CartContextType);
@@ -44,45 +48,57 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   if (!userContext) {
     return <div>Loading...</div>;
   }
-  const { user } = userContext; // Get user from context
+  const { user } = userContext;
 
-  const [cart, setCart] = useState<CartProduct[]>(
-    JSON.parse(localStorage.getItem("cart") || "[]") || []
-  );
+  let localCart;
+  if (typeof window !== "undefined") {
+    localCart = JSON.parse(localStorage.getItem("cart") || "[]") || [];
+  }
+
+  const [cart, setCart] = useState<CartProduct[]>(localCart);
 
   const isAuthenticated = () => {
     const token = localStorage.getItem("token");
-    return !!token; // Check if token exists
+    return !!token;
   };
 
-  const addProductToCart = (product: Product) => {
+  const addProductToCart = (product: Product, size: string) => {
     const userId = user?.id;
     if (!userId || !isAuthenticated()) {
       alert("Please log in to add products to the cart.");
       return;
     }
     const existingProduct = cart.find(
-      (p) => p.product._id === product._id && p.userId === userId
+      (p) =>
+        p.product._id === product._id &&
+        p.userId === userId &&
+        p.selectedSize === size
     );
     if (existingProduct) {
-      increaseProductQuantity(product);
+      increaseProductQuantity(product, size);
     } else {
-      setCart([...cart, { product, quantity: 1, userId }]); // Add userId here
+      setCart([...cart, { product, quantity: 1, userId, selectedSize: size }]);
     }
+    toast.success("Бүтээгдэхүүнийг сагсанд амжилттай нэмлээ.");
   };
 
-  const removeProductFromCart = (product: Product) => {
+  const removeProductFromCart = (product: Product, size: string) => {
     const userId = user?.id;
     if (!userId || !isAuthenticated()) {
       alert("Please log in to remove products from the cart.");
       return;
     }
     setCart(
-      cart.filter((p) => p.product._id !== product._id || p.userId !== userId)
+      cart.filter(
+        (p) =>
+          p.product._id !== product._id ||
+          p.userId !== userId ||
+          p.selectedSize !== size
+      )
     );
   };
 
-  const increaseProductQuantity = (product: Product) => {
+  const increaseProductQuantity = (product: Product, size: string) => {
     const userId = user?.id;
     if (!userId || !isAuthenticated()) {
       alert("Please log in to update product quantity.");
@@ -90,33 +106,43 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     }
     setCart(
       cart.map((p) =>
-        p.product._id === product._id && p.userId === userId
+        p.product._id === product._id &&
+        p.userId === userId &&
+        p.selectedSize === size
           ? { ...p, quantity: p.quantity + 1 }
           : p
       )
     );
   };
 
-  const decreaseProductQuantity = (product: Product) => {
+  const decreaseProductQuantity = (product: Product, size: string) => {
     const userId = user?.id;
     if (!userId || !isAuthenticated()) {
       alert("Please log in to update product quantity.");
       return;
     }
     const existingProduct = cart.find(
-      (p) => p.product._id === product._id && p.userId === userId
+      (p) =>
+        p.product._id === product._id &&
+        p.userId === userId &&
+        p.selectedSize === size
     );
     if (existingProduct?.quantity === 1) {
-      removeProductFromCart(product);
+      removeProductFromCart(product, size);
     } else {
       setCart(
         cart.map((p) =>
-          p.product._id === product._id && p.userId === userId
+          p.product._id === product._id &&
+          p.userId === userId &&
+          p.selectedSize === size
             ? { ...p, quantity: p.quantity - 1 }
             : p
         )
       );
     }
+  };
+  const clearCart = () => {
+    setCart([]);
   };
 
   useEffect(() => {
@@ -131,6 +157,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
         removeProductFromCart,
         increaseProductQuantity,
         decreaseProductQuantity,
+        clearCart,
       }}
     >
       {children}

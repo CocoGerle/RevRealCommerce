@@ -10,7 +10,12 @@ const authMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  if (req.path.startsWith("/auth")) return next();
+  if (
+    req.path.startsWith("/auth") ||
+    req.path.startsWith("/product") ||
+    req.path.startsWith("/category")
+  )
+    return next();
 
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1];

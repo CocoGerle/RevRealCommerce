@@ -15,7 +15,7 @@ const orderSchema = new Schema({
       },
       size: {
         type: [String],
-        required: false,
+        required: true,
       },
       // price: {
       //   type: Number,

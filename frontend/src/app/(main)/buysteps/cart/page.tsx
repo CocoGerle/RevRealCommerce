@@ -33,6 +33,8 @@ export const Cart = () => {
     setTotalPrice(totalPrice);
   }, [userCart]);
 
+  console.log(userCart);
+
   return (
     <div>
       <div className="w-[1280px] m-auto pt-7 pb-[137px]">
@@ -51,8 +53,11 @@ export const Cart = () => {
             <div>({userCart.length})</div>
           </div>
           <div className="flex flex-col gap-6">
-            {userCart.map(({ product, quantity }) => (
-              <div className="flex justify-between gap-6" key={product._id}>
+            {userCart.map(({ product, quantity, selectedSize }) => (
+              <div
+                className="flex justify-between gap-6 bg-white rounded-xl p-4"
+                key={product._id}
+              >
                 <div className="relative h-[120px] w-[120px]">
                   <Image
                     alt=""
@@ -61,24 +66,30 @@ export const Cart = () => {
                     className="object-cover rounded-xl"
                   />
                 </div>
-                <div className="flex flex-col justify-between w-full">
+                <div className="flex flex-col justify-between w-full ">
                   <div>
                     <div className="pb-1">{product.productName}</div>
                     <div className="flex items-center gap-4">
                       <div
-                        className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
-                        onClick={() => decreaseProductQuantity(product)}
+                        className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer hover:bg-[#E4E4E7]"
+                        onClick={() =>
+                          decreaseProductQuantity(product, selectedSize)
+                        }
                       >
                         -
                       </div>
                       <div>{quantity}</div>
+
                       <div
-                        className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black"
-                        onClick={() => increaseProductQuantity(product)}
+                        className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer hover:bg-[#E4E4E7]"
+                        onClick={() =>
+                          increaseProductQuantity(product, selectedSize)
+                        }
                       >
                         +
                       </div>
                     </div>
+                    <div>Size: {selectedSize}</div>
                   </div>
                   <div className="font-bold">
                     {(quantity * product.price).toLocaleString()}₮
@@ -86,7 +97,7 @@ export const Cart = () => {
                 </div>
                 <div className="p-4 cursor-pointer">
                   <FaRegTrashCan
-                    onClick={() => removeProductFromCart(product)}
+                    onClick={() => removeProductFromCart(product, selectedSize)}
                   />
                 </div>
               </div>

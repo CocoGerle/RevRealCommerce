@@ -1,5 +1,6 @@
 "use client";
 import { api } from "@/components/lib/axios";
+import { useCart } from "@/components/utils/CartProvider";
 import { UserContext } from "@/components/utils/context";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ const Saved = () => {
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
   const userContext = useContext(UserContext);
   const { user, getUser } = userContext;
+  const { addProductToCart } = useCart();
 
   const toggleHeart = async (index: number, id: string) => {
     setHearts((prevHearts) => ({
@@ -79,7 +81,10 @@ const Saved = () => {
                   <div className="font-bold">
                     {item.price.toLocaleString()}₮
                   </div>
-                  <button className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full">
+                  <button
+                    className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full"
+                    onClick={() => addProductToCart(item)}
+                  >
                     Сагслах
                   </button>
                 </div>

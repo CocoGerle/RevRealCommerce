@@ -61,7 +61,11 @@ const UserInfo = () => {
               Хэрэглэгчийн хэсэг
             </h1>
             <div>
-              {user ? <p>Welcome, {user.name}!</p> : <p>Please log in.</p>}
+              {user ? (
+                <p>Сайн байна уу, {user?.userName}!</p>
+              ) : (
+                <p>Нэвтэрнэ үү</p>
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <div className="mt-5">

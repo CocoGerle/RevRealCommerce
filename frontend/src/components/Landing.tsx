@@ -26,12 +26,12 @@ export const Landing = () => {
   const getProducts = async () => {
     try {
       const response = await api?.get("/product", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // },
       });
       setProducts(response.data.allProducts);
-      console.log(response.data.allProducts);
+      // console.log(response.data.allProducts);
     } catch (error) {
       return console.log(error);
     }

@@ -15,7 +15,7 @@ export const CreateOrder: RequestHandler = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Intervel server error order create",
+      message: "Захиалга үүсгэхэд алдаа гарлаа. Мэдээллээ бүрэн оруулна уу!",
       error,
     });
   }
