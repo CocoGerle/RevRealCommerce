@@ -1,29 +1,46 @@
+
 "use client";
 import { api } from "@/components/lib/axios";
 import { UserContext } from "@/components/utils/context";
+import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+type User = {
+  id: string;
+  userName: string;
+  phoneNumber: string;
+  email: string;
+  address: string;
+};
+
+type UserContextType = {
+  user: User | null;
+  setUser: (user: User) => void;
+  getUser: () => void;
+};
+
 const UserInfo = () => {
-  const userContext = useContext(UserContext);
+  const userContext = useContext<UserContextType | null>(UserContext);
 
   if (!userContext) {
     return <div>Loading...</div>;
   }
 
   const { user, setUser, getUser } = userContext;
-  const [userName, setUserName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
+
+  const [userName, setUserName] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
 
   const updateUser = async () => {
     try {
       const updatedUser = {
-        userName: userName,
-        phoneNumber: phoneNumber,
-        email: email,
-        address: address,
+        userName,
+        phoneNumber,
+        email,
+        address,
       };
       const response = await api.put(`/users/update`, updatedUser, {
         headers: {
@@ -32,7 +49,6 @@ const UserInfo = () => {
       });
       setUser(response.data.user);
       toast.success(response.data.message);
-      console.log(response.data.user);
       getUser();
     } catch (error) {
       console.log(error);
@@ -41,19 +57,22 @@ const UserInfo = () => {
   };
 
   useEffect(() => {
-    console.log("User,", user);
-    setUserName(user?.userName);
-    setAddress(user?.address);
-    setEmail(user?.email);
-    setPhoneNumber(user?.phoneNumber);
+    setUserName(user?.userName || "");
+    setAddress(user?.address || "");
+    setEmail(user?.email || "");
+    setPhoneNumber(user?.phoneNumber || "");
   }, [user]);
 
   return (
     <div className="bg-[#f7f7f7] min-h-[66vh]">
       <div className="flex gap-5 max-w-screen-lg m-auto pt-[104px]">
         <div className="w-[244px]">
-          <div>Хэрэглэгчийн хэсэг</div>
-          <div>Захиалгын түүх</div>
+          <div className="bg-white py-2 px-4 rounded-2xl">
+            Хэрэглэгчийн хэсэг
+          </div>
+          <Link href={`/orderHistory`}>
+            <div className="py-2 px-4">Захиалгын түүх</div>
+          </Link>
         </div>
         <div>
           <div className="w-[620px]">

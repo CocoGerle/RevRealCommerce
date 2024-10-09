@@ -30,6 +30,7 @@ type CartProduct = {
   quantity: number;
   selectedSize: string;
   userId: string;
+  price: number;
 };
 
 type CartContextType = {

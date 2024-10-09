@@ -54,6 +54,12 @@ const productSchema = new Schema({
     type: Number,
     require: false,
   },
+  soldCount: {
+    type: Number,
+    default: 0,
+    min: 0,
+    require: false,
+  },
   createdAt: {
     type: Date,
     required: true,

@@ -29,7 +29,7 @@ export const Header = () => {
   }
   const { user, LogOut } = userContext;
 
-  const { cart } = useCart();
+  const { cart = [] } = useCart(); // Ensure cart is an array
   const userId = user?.id;
   const userCart = cart.filter((item) => item.userId === userId);
 

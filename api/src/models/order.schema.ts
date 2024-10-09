@@ -1,5 +1,5 @@
 import mongoose, { model, Schema } from "mongoose";
-import { productModel } from "./product.schema";
+// import { productModel } from "./product.schema";
 
 const orderSchema = new Schema({
   product: [
@@ -25,7 +25,7 @@ const orderSchema = new Schema({
   },
   userName: {
     type: String,
-    required: true,
+    required: false,
   },
   phoneNumber: {
     type: String,
@@ -42,6 +42,10 @@ const orderSchema = new Schema({
   status: {
     type: String,
     default: "Ordered",
+    required: false,
+  },
+  paid: {
+    type: Number,
     required: false,
   },
   createdAt: {
