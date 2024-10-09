@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { AdminNavbar } from "./components/adminNavbar";
+import { AdminBurgerBar } from "./components/adminBurgerBar";
 
 // import { Navbar } from "@/components/Navbar";
 // import { Footer } from "@/components/Footer";
@@ -12,9 +14,9 @@ export default function MainLayout({
     <>
       {/* <ProductContextProvider> */}
       <div style={{ minHeight: "calc(100vh - 320.5px - 74px)" }}>
-        {/* <AdminNavbar /> */}
+        <AdminNavbar />
         <div className="flex m-auto w-[1280px]">
-          {/* <AdminBurgerBar /> */}
+          <AdminBurgerBar />
           {children}
         </div>
       </div>

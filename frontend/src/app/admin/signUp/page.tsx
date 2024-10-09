@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 
-const AdminSignUp = () => {
+const AdminSignIn = () => {
   return (
     <div>
       <div className="w-[1280px] m-auto">
@@ -11,7 +11,7 @@ const AdminSignUp = () => {
           </div>
         </div>
         <div className="flex flex-col gap-6 w-2/6 items-center m-auto p-10 border rounded-lg">
-          <div className="font-bold text-[32px]">Бүртгүүлэх</div>
+          <div className="font-bold text-[32px]">Нэвтрэх</div>
           <div className="flex flex-col gap-4 w-full border-b pb-4">
             <div>
               <div>Имэйл</div>
@@ -63,4 +63,4 @@ const AdminSignUp = () => {
     </div>
   );
 };
-export default AdminSignUp;
+export default AdminSignIn;
