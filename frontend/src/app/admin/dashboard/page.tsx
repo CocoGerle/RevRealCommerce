@@ -76,37 +76,37 @@ const Dashboard = () => {
     }
   }, [allProducts]);
 
-  // useEffect(() => {
-  //   const today = new Date();
-  //   const todayStr = today.toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+  useEffect(() => {
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
 
-  //   console.log(todayStr);
+    console.log(todayStr);
 
-  //   const todayOrders = orders.filter(
-  //     (order) =>
-  //       new Date(order.createdAt).toISOString().split("T")[0] === todayStr
-  //   );
+    const todayOrders = orders.filter(
+      (order) =>
+        new Date(order.createdAt).toISOString().split("T")[0] === todayStr
+    );
 
-  //   const todayTotalIncome = todayOrders.reduce((total, order) => {
-  //     return (
-  //       total +
-  //       order.products.reduce(
-  //         (sum, product) => sum + product.price * product.soldCount,
-  //         0
-  //       )
-  //     );
-  //   }, 0);
+    const todayTotalIncome = todayOrders.reduce((total, order) => {
+      return (
+        total +
+        order.products?.reduce(
+          (sum, product) => sum + product.price * product.soldCount,
+          0
+        )
+      );
+    }, 0);
 
-  //   const todayTotalSoldCount = todayOrders.reduce((total, order) => {
-  //     return (
-  //       total +
-  //       order.products.reduce((sum, product) => sum + product.soldCount, 0)
-  //     );
-  //   }, 0);
+    const todayTotalSoldCount = todayOrders.reduce((total, order) => {
+      return (
+        total +
+        order.products?.reduce((sum, product) => sum + product.soldCount, 0)
+      );
+    }, 0);
 
-  //   setTotalIncome(todayTotalIncome);
-  //   setTotalSoldCount(todayTotalSoldCount);
-  // }, [orders]);
+    setTotalIncome(todayTotalIncome);
+    setTotalSoldCount(todayTotalSoldCount);
+  }, [orders]);
 
   return (
     <div className="bg-[#1C20240A] h-screen">

@@ -17,10 +17,11 @@ const OrderHistory = () => {
 
   const getOrders = async () => {
     try {
-      const response = await api.get(`/order/${user?.id}`, {
+      const response = await api.get(`/order/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
+        params: { userId: user?.id },
       });
       setOrders(response.data.orders);
       setHideOrder(new Array(response.data.orders.length).fill(true));
