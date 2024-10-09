@@ -54,7 +54,12 @@ interface Product {
 }
 
 const Detail = () => {
-  const { addProductToCart } = useCart();
+  const {
+    addProductToCart,
+    setCart,
+    increaseProductQuantity,
+    decreaseProductQuantity,
+  } = useCart();
 
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -74,7 +79,6 @@ const Detail = () => {
         },
       });
       setProducts(response.data.allProducts);
-      console.log(response.data.allProducts);
     } catch (error) {
       return console.log(error);
     }
@@ -119,7 +123,9 @@ const Detail = () => {
   const [currentImage, setCurrentImage] = useState<number>(0);
 
   const [hiddenElement, setHiddenElement] = useState(false);
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(0);
+  // setCart(count);
+  console.log(count);
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -277,13 +283,13 @@ const Detail = () => {
                 <div
                   className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
                   onClick={() => setCount((prev) => (prev > 0 ? prev - 1 : 0))}
-                >
-                  -
-                </div>
+                  // onClick={() => decreaseProductQuantity(product)}
+                ></div>
                 <div>{count}</div>
                 <div
                   className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
                   onClick={() => setCount((prev) => prev + 1)}
+                  // onClick={() => increaseProductQuantity(product)}
                 >
                   +
                 </div>

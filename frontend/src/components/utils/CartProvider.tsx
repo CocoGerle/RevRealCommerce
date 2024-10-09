@@ -34,6 +34,7 @@ type CartProduct = {
 
 type CartContextType = {
   cart: CartProduct[];
+  setCart: (cart: CartProduct | null) => void;
   addProductToCart: (product: Product, size: string) => void;
   removeProductFromCart: (product: Product, size: string) => void;
   increaseProductQuantity: (product: Product, size: string) => void;
@@ -153,6 +154,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     <CartContext.Provider
       value={{
         cart,
+        setCart,
         addProductToCart,
         removeProductFromCart,
         increaseProductQuantity,

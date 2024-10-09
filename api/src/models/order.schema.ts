@@ -13,14 +13,10 @@ const orderSchema = new Schema({
         type: Number,
         required: true,
       },
-      size: {
-        type: [String],
+      price: {
+        type: Number,
         required: true,
       },
-      // price: {
-      //   type: Number,
-      //   required: true,
-      // },
     },
   ],
   userId: {

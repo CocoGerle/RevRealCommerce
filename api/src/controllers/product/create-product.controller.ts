@@ -8,7 +8,6 @@ export const createProductController: RequestHandler = async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
     return res.status(201).json({
       message: "Product created successfully",
     });

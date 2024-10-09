@@ -19,7 +19,6 @@ export const createReviewController: RequestHandler = async (req, res) => {
       { $inc: { reviewCount: 1 } },
       { new: true }
     );
-
     const reviews = await reviewModel.find({ productId });
     const validReviews = reviews.filter((review) => review.rating != null);
     const totalRating = validReviews.reduce(
