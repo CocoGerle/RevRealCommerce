@@ -45,13 +45,14 @@ interface Product {
   _id: string;
   createdAt: string;
   reviewCount: number;
+  qty: number;
 }
 interface Category {
   name: string;
   _id: string;
 }
 
-export default function home() {
+export default function Home() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<
     Product[] | undefined
@@ -204,7 +205,7 @@ export default function home() {
   }, [search, allProducts, sortByPrice, sortByDate]);
 
   return (
-    <div className="bg-[#1C20240A] h-screen p-4">
+    <div className="bg-[#1C20240A] p-4">
       <div className="w-[985px] m-auto flex gap-4">
         <div className="flex w-full">
           <div className={`flex-col w-full gap-6`}>
@@ -353,7 +354,7 @@ export default function home() {
                         {item.price.toLocaleString()}₮
                       </div>
                       <div className="w-[10%]  flex  items-center justify-center">
-                        {item.reviewCount}
+                        {item.qty}
                       </div>
                       <div className="w-[20%] text-center flex items-center justify-center">
                         {new Date(item.createdAt).toLocaleString()}
@@ -369,20 +370,20 @@ export default function home() {
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>
-                                Та тус бүтээгдэхүүнийг устгахдаа итгэлтэй байна
-                                уу?
+                                Та бүтээгдэхүүнийг устгахдаа итгэлтэй байна уу?
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your prduct from our servers.
+                                Алдсан бол ахиад хэзээ ч ирэхгүй шдээ!
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Үгүй</AlertDialogCancel>
+                              <AlertDialogCancel>
+                                Заза, больлоо
+                              </AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() => deleteProduct(item._id)}
                               >
-                                Тийм
+                                Хамаагүй ээ устга
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>

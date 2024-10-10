@@ -26,7 +26,7 @@ export const CreateOrder: RequestHandler = async (req, res) => {
       for (const product of products) {
         await productModel.findByIdAndUpdate(
           product.productId,
-          { $inc: { soldCount: product.qty } }, // Increment soldCount by the quantity ordered
+          { $inc: { soldCount: product.qty, qty: -product.qty } }, // Increment soldCount by the quantity ordered
           { new: true }
         );
       }

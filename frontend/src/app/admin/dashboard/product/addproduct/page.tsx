@@ -4,22 +4,25 @@ import axios from "axios";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const sizeData = ["Free", "S", "M", "L", "XL", "2XL", "3XL"];
 interface Category {
   name: string;
   _id: string;
 }
-export default function home() {
+export default function Home() {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState<number | undefined>();
   const [allCategories, setAllCategories] = useState<Category[] | null>(null);
   const [categoryId, setCategoryId] = useState<string[]>([]);
   const [description, setDescription] = useState("");
-  const [sizes, setSizes] = useState<string[]>([]);
+  const [size, setSize] = useState<string[]>([]);
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [imgUrl, setImgUrl] = useState<string[]>([]);
+  const [qty, setQty] = useState<number | undefined>();
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
@@ -45,14 +48,15 @@ export default function home() {
   const createProduct = async () => {
     try {
       const response = await api.post(
-        "/",
+        "/product",
         {
           productName,
           price,
           categoryId,
           description,
-          sizes,
+          size,
           images: imgUrl,
+          qty,
         },
         {
           headers: {
@@ -60,9 +64,11 @@ export default function home() {
           },
         }
       );
+      toast.success("Бүтээгдэхүүн амжилттай нэмлээ!");
       window.location.reload();
     } catch (error) {
       console.log(error);
+      toast.error("Бүтээгдэхүүн нэмэхэд алдаа гарлаа.");
     }
   };
 
@@ -86,7 +92,7 @@ export default function home() {
 
   console.log(allCategories);
   console.log(categoryId);
-  console.log(sizes);
+  console.log(size);
 
   const handleCategory = (id: string) => {
     if (categoryId?.includes(id)) {
@@ -96,18 +102,18 @@ export default function home() {
     }
   };
 
-  const handleSize = (size: string) => {
-    if (sizes?.includes(size)) {
-      setSizes(sizes.filter((sizeName) => sizeName !== size));
+  const handleSize = (item: string) => {
+    if (size.includes(item)) {
+      setSize(size.filter((sizeName) => sizeName !== item));
     } else {
-      setSizes([...sizes, size]);
+      setSize([...size, item]);
     }
   };
 
   console.log(imgUrl);
 
   return (
-    <div className="bg-[#1C20240A] h-screen p-4">
+    <div className="bg-[#1C20240A] p-4">
       <div className="flex w-[940px] m-auto gap-4">
         <div className="flex-1 flex flex-col gap-8">
           <div className="flex gap-4 items-center p-4 bg-white">
@@ -195,6 +201,11 @@ export default function home() {
                   <input
                     className="p-3 bg-[#F7F7F8] text-[#8B8E95] rounded-lg w-full"
                     placeholder="Үлдэгдэл тоо ширхэг"
+                    type="number"
+                    value={qty}
+                    onChange={(event) =>
+                      setQty(Number(event.target.value) || undefined)
+                    }
                   ></input>
                 </div>
               </div>
@@ -225,16 +236,16 @@ export default function home() {
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-6">
                     <div className="flex gap-3 justify-center">
-                      {sizeData.map((size, index) => {
+                      {sizeData.map((item, index) => {
                         return (
                           <label key={index}>
                             <input
                               type="checkbox"
-                              id={size}
-                              checked={sizes?.includes(size)}
-                              onClick={() => handleSize(size)}
+                              id={item}
+                              checked={size.includes(item)}
+                              onClick={() => handleSize(item)}
                             />
-                            {size}
+                            {item}
                           </label>
                         );
                       })}
@@ -245,7 +256,7 @@ export default function home() {
               <div className="w-full flex justify-end">
                 <div className="flex gap-6">
                   <div
-                    className="bg-black text-white font-semibold rounded-lg w-fit px-5 py-4 text-lg"
+                    className="bg-black text-white font-semibold rounded-lg w-fit px-5 py-4 text-lg cursor-pointer"
                     onClick={createProduct}
                   >
                     Нийтлэх

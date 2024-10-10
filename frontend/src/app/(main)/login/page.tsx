@@ -54,6 +54,7 @@ const Login = () => {
         "
               placeholder="Нууц үг"
               name="password"
+              type="password"
               onChange={(e) => {
                 setPassword(e.target.value);
               }}

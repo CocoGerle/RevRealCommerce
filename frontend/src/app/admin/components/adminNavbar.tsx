@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CiHeart, CiSearch, CiShoppingCart, CiUser } from "react-icons/ci";
 
 export const AdminNavbar = () => {
   return (

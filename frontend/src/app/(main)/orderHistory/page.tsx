@@ -5,8 +5,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
+interface Order {
+  userName: string;
+  createdAt: any;
+  _id: string;
+  status: string;
+  phoneNumber: string;
+  address: string;
+  product: [];
+  paid: number;
+}
+
 const OrderHistory = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [hideOrder, setHideOrder] = useState<boolean[]>([]);
 
   const userContext = useContext(UserContext);
@@ -103,11 +114,11 @@ const OrderHistory = () => {
                                       <Image
                                         src={
                                           item?.productId?.images[0] ||
-                                          "/fallback-image.jpg"
+                                          "/detail2.png"
                                         }
                                         alt={
                                           item?.productId?.productName ||
-                                          "Product image"
+                                          "Sorry"
                                         }
                                         fill
                                         className="rounded-xl"
@@ -122,17 +133,12 @@ const OrderHistory = () => {
                                           {item.qty} x{" "}
                                           {item?.productId?.price
                                             ? item?.productId?.price.toLocaleString()
-                                            : "Үнэ байхгүй"}{" "}
+                                            : order.paid}{" "}
                                           ₮
                                         </div>
                                       </div>
                                       <div className="font-bold">
-                                        {item?.productId?.price
-                                          ? (
-                                              item.qty * item?.productId?.price
-                                            ).toLocaleString()
-                                          : "Нийт үнэ байхгүй"}{" "}
-                                        ₮
+                                        {order.paid.toLocaleString()}₮
                                       </div>
                                     </div>
                                   </div>
@@ -142,15 +148,7 @@ const OrderHistory = () => {
                             <div className="flex justify-between pt-4">
                               <div>Үнийн дүн:</div>
                               <div className="font-bold">
-                                {order.product
-                                  .reduce(
-                                    (total: number, item: any) =>
-                                      total +
-                                      (item?.productId?.price || 0) * item.qty,
-                                    0
-                                  )
-                                  .toLocaleString()}{" "}
-                                ₮
+                                {order.paid.toLocaleString()} ₮
                               </div>
                             </div>
                           </div>

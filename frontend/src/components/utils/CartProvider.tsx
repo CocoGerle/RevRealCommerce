@@ -31,12 +31,13 @@ type CartProduct = {
   selectedSize: string;
   userId: string;
   price: number;
+  qty: number;
 };
 
 type CartContextType = {
   cart: CartProduct[];
-  setCart: (cart: CartProduct | null) => void;
-  addProductToCart: (product: Product, size: string) => void;
+  setCart: (cart: CartProduct[]) => void;
+  addProductToCart: (product: Product, size: string, quantitys: number) => void;
   removeProductFromCart: (product: Product, size: string) => void;
   increaseProductQuantity: (product: Product, size: string) => void;
   decreaseProductQuantity: (product: Product, size: string) => void;
@@ -64,7 +65,11 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     return !!token;
   };
 
-  const addProductToCart = (product: Product, size: string) => {
+  const addProductToCart = (
+    product: Product,
+    size: string,
+    quantity: number
+  ) => {
     const userId = user?.id;
     if (!userId || !isAuthenticated()) {
       alert("Please log in to add products to the cart.");
@@ -79,7 +84,15 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     if (existingProduct) {
       increaseProductQuantity(product, size);
     } else {
-      setCart([...cart, { product, quantity: 1, userId, selectedSize: size }]);
+      setCart([
+        ...cart,
+        {
+          product,
+          quantity,
+          userId,
+          selectedSize: size,
+        },
+      ]);
     }
     toast.success("Бүтээгдэхүүнийг сагсанд амжилттай нэмлээ.");
   };

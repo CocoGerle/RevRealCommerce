@@ -10,7 +10,7 @@ interface User {
   id: string;
   savedProduct: product[];
   address: string;
-  phoneNumber: number;
+  phoneNumber: string;
 }
 interface product {
   _id: string;

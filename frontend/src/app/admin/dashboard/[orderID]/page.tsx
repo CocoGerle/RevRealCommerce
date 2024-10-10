@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 interface Order {
   userName: string;
-  createdAt: string;
+  createdAt: any;
   _id: string;
   status: string;
   phoneNumber: string;
@@ -32,7 +32,7 @@ interface Products {
 type ParamsType = {
   orderID: string;
 };
-export default function home() {
+export default function Home() {
   const [order, setOrder] = useState<Order>();
   const { orderID } = useParams<ParamsType>();
   const [totalAmount, setTotalAmount] = useState<number>();

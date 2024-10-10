@@ -6,7 +6,7 @@ import { IoGrid, IoSettingsSharp } from "react-icons/io5";
 import { MdContentPaste } from "react-icons/md";
 
 export const AdminBurgerBar = () => {
-  const pathname = usePathname(); //
+  const pathname = usePathname();
 
   const isActive = (path: string) =>
     pathname === path ? "bg-black text-white" : "";

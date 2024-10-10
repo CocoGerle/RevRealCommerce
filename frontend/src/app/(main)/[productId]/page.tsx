@@ -54,12 +54,7 @@ interface Product {
 }
 
 const Detail = () => {
-  const {
-    addProductToCart,
-    setCart,
-    increaseProductQuantity,
-    decreaseProductQuantity,
-  } = useCart();
+  const { addProductToCart } = useCart();
 
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -136,7 +131,7 @@ const Detail = () => {
 
   const { productId } = useParams<IdType>();
 
-  const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
+  // const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
 
   const getProduct = async (productId: string) => {
     try {
@@ -309,7 +304,7 @@ const Detail = () => {
                     alert("Please select a size before adding to the cart.");
                     return;
                   }
-                  addProductToCart(product, selectedSize);
+                  addProductToCart(product, selectedSize, count);
                 }}
               >
                 Сагсанд нэмэх

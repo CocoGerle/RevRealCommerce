@@ -1,21 +1,8 @@
 "use client";
-import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { UserContextProvider } from "@/components/utils/context";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({
   children,
@@ -25,10 +12,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <UserContextProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <body>
           <div>{children}</div>
+          <ToastContainer />
         </body>
       </UserContextProvider>
     </html>

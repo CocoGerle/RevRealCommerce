@@ -3,7 +3,21 @@ import { FaArrowRight } from "react-icons/fa";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api } from "@/components/lib/axios";
-import { CgToday } from "react-icons/cg";
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 interface Product {
   images: string[];
@@ -27,6 +41,7 @@ const Dashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [totalSoldCount, setTotalSoldCount] = useState<number>(0);
+  const [chartData, setChartData] = useState<any[]>([]);
 
   const getProducts = async () => {
     try {
@@ -51,6 +66,9 @@ const Dashboard = () => {
         params: { admin: "admin" },
       });
       setOrders(res.data.orders);
+      const generatedData = generateChartData(res.data.orders);
+      setChartData(generatedData);
+      console.log("Chart Data after generation:", generatedData);
       console.log(res.data.orders);
     } catch (error) {
       console.log(error);
@@ -60,22 +78,6 @@ const Dashboard = () => {
     getProducts();
     getOrders();
   }, []);
-
-  // useEffect(() => {
-  //   if (allProducts) {
-  //     const totalIncome = allProducts.reduce((total, product) => {
-  //       return total + product.price * product.soldCount;
-  //     }, 0);
-  //     setTotalIncome(totalIncome);
-
-  //     const totalSoldCount = allProducts.reduce((total, product) => {
-  //       return total + product.soldCount;
-  //     }, 0);
-  //     setTotalSoldCount(totalSoldCount);
-
-  //     console.log("Total Sold Income:", totalIncome);
-  //   }
-  // }, [allProducts]);
 
   useEffect(() => {
     const todayOrders = orders.filter((order) => {
@@ -99,8 +101,53 @@ const Dashboard = () => {
     setTotalSoldCount(todayTotalSoldCount);
   }, [orders]);
 
+  const generateChartData = (orders: Order[]) => {
+    const today = new Date();
+    const lastFiveDays = Array.from({ length: 5 }, (_, i) => {
+      const day = new Date(today);
+      day.setDate(today.getDate() - i);
+      return day.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+      });
+    });
+
+    const data = lastFiveDays.map((day) => {
+      const dayOrders = orders.filter((order) => {
+        const orderDate = new Date(order.createdAt);
+        const currentDay = new Date(day);
+        return (
+          orderDate.getFullYear() === currentDay.getFullYear() &&
+          orderDate.getMonth() === currentDay.getMonth() &&
+          orderDate.getDate() === currentDay.getDate()
+        );
+      });
+
+      console.log("Orders for", day, ":", dayOrders);
+
+      const totalIncome = dayOrders.reduce((total, order) => {
+        const paidAmount = Number(order.paid);
+        return total + (isNaN(paidAmount) ? 0 : paidAmount);
+      }, 0);
+
+      console.log("Total Income for", day, ":", totalIncome);
+
+      return { month: day, desktop: totalIncome }; // Update this line
+    });
+
+    console.log("Generated Chart Data:", data);
+    return data.reverse();
+  };
+
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "black",
+    },
+  } satisfies ChartConfig;
+
   return (
-    <div className="bg-[#1C20240A] h-screen">
+    <div className="bg-[#1C20240A]">
       <div className="w-[985px] m-auto flex">
         <div className="flex flex-col gap-[50px] w-full  px-6 py-6">
           <div className="flex gap-6 w-full">
@@ -175,10 +222,37 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex-1 rounded-xl px-6 py-4 bg-white">
-              <div className="flex items-center w-full justify-between pb-5">
-                <div className="font-semibold text-[18px]">Борлуулалт</div>
-                <FaArrowRight />
-              </div>
+              <div className="flex items-center w-full justify-between pb-5"></div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Борлуулалт</CardTitle>
+                  <FaArrowRight />
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={chartConfig}>
+                    <BarChart accessibilityLayer data={chartData}>
+                      <CartesianGrid vertical={false} />
+                      <XAxis
+                        dataKey="month"
+                        tickLine={false}
+                        tickMargin={10}
+                        axisLine={false}
+                        tickFormatter={(value) => value.slice(0, 3)}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel />}
+                      />
+                      <Bar
+                        dataKey="desktop"
+                        fill="var(--color-desktop)"
+                        radius={8}
+                        className="w-2"
+                      />
+                    </BarChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
