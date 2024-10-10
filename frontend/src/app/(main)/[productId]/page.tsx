@@ -284,7 +284,9 @@ const Detail = () => {
                   className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
                   onClick={() => setCount((prev) => (prev > 0 ? prev - 1 : 0))}
                   // onClick={() => decreaseProductQuantity(product)}
-                ></div>
+                >
+                  -
+                </div>
                 <div>{count}</div>
                 <div
                   className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"

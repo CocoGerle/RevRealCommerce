@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Order {
-  firstName: string;
+  userName: string;
   createdAt: string;
   _id: string;
   status: string;
@@ -26,7 +26,7 @@ interface Products {
   productId: ProductId;
   size: string[];
   _id: string;
-  quantity: number;
+  qty: number;
 }
 
 type ParamsType = {
@@ -56,19 +56,25 @@ export default function home() {
   }, [orderID]);
 
   useEffect(() => {
-    if (order?.products) {
-      const total = order.products.reduce((acc, item) => {
-        return acc + item.quantity * item?.productId?.price;
+    if (order?.product) {
+      const total = order.product.reduce((acc, item) => {
+        return acc + item.qty * item?.productId?.price;
       }, 0);
       setTotalAmount(total);
     }
   }, [order]);
 
+  const date = new Date(order?.createdAt).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
   return (
-    <div className="flex-1 flex flex-col gap-6">
-      <div className="flex gap-4 items-center p-4 bg-white">
+    <div className="flex-1 flex flex-col gap-6 bg-[#ECEDF0] p-6">
+      <div className="flex gap-4 items-center p-4 bg-white rounded-lg">
         <div className="">{/* <LeftDirectionArrow /> */}</div>
-        <div>Захиалгын дэлгэрэнгүй</div>
+        <div className="">Захиалгын дэлгэрэнгүй</div>
       </div>
       <div className="flex gap-6">
         <div className="flex flex-col gap-6 w-[624px] bg-white rounded-lg min-h-[82vh] p-6">
@@ -85,7 +91,7 @@ export default function home() {
           <div className="flex flex-col gap-1">
             <div className="text-[#3F4145]">Захиалагч: Хувь хүн </div>
             <div className="flex gap-4">
-              <div className="font-semibold">{order?.firstName}</div>
+              <div className="font-semibold">{order?.userName}</div>
               <div className="text-[#3F4145]">{order?.phoneNumber}</div>
             </div>
           </div>
@@ -108,23 +114,21 @@ export default function home() {
                     <div className="font-bold text-2xl">
                       {item?.productId?.productName}
                     </div>
+                    <div>{date}</div>
+
                     <div className="text-[#3F4145] text-[14px]">
                       Бүтээгдэхүүний ID: {item?.productId?._id}
                     </div>
                   </div>
                   <div className="flex justify-between">
                     <div className="flex">
-                      <div>Тоо ширхэг: {item.quantity}</div>
+                      <div>Тоо ширхэг: {item.qty}</div>
                       <div className="text-[#3F4145]">
                         x {item?.productId?.price.toLocaleString()}₮
                       </div>
                     </div>
                     <div className="font-semibold text-lg">
-                      ₮
-                      {(
-                        item.quantity * item?.productId?.price
-                      ).toLocaleString()}
-                      ₮
+                      ₮{(item.qty * item?.productId?.price).toLocaleString()}₮
                     </div>
                   </div>
                 </div>
@@ -157,7 +161,7 @@ export default function home() {
                           {item?.productId?.productName}
                         </div>
                         <div className=" font-semibold text-[#3F4145] w-fit">
-                          x {item.quantity}
+                          x {item.qty}
                         </div>
                         <div className=" font-semibold text-[#3F4145] w-fit">
                           {item?.productId?.price.toLocaleString()} ₮

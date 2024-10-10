@@ -12,6 +12,6 @@ productRouter
   .get("/:id", getProductByIdController)
   .get("/", getProductsFilteredByCategoryController)
   .delete("/:id", deleteProductByIdController)
-  .put("/:id", UpdateProductByIdController);
+  .put("/update/:id", UpdateProductByIdController);
 
 export { productRouter };

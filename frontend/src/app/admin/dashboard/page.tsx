@@ -19,6 +19,7 @@ interface Order {
   _id: string;
   status: string;
   products: { price: number; soldCount: number }[];
+  paid: number;
 }
 
 const Dashboard = () => {
@@ -60,49 +61,39 @@ const Dashboard = () => {
     getOrders();
   }, []);
 
+  // useEffect(() => {
+  //   if (allProducts) {
+  //     const totalIncome = allProducts.reduce((total, product) => {
+  //       return total + product.price * product.soldCount;
+  //     }, 0);
+  //     setTotalIncome(totalIncome);
+
+  //     const totalSoldCount = allProducts.reduce((total, product) => {
+  //       return total + product.soldCount;
+  //     }, 0);
+  //     setTotalSoldCount(totalSoldCount);
+
+  //     console.log("Total Sold Income:", totalIncome);
+  //   }
+  // }, [allProducts]);
+
   useEffect(() => {
-    if (allProducts) {
-      const totalIncome = allProducts.reduce((total, product) => {
-        return total + product.price * product.soldCount;
-      }, 0);
-      setTotalIncome(totalIncome);
-
-      const totalSoldCount = allProducts.reduce((total, product) => {
-        return total + product.soldCount;
-      }, 0);
-      setTotalSoldCount(totalSoldCount);
-
-      console.log("Total Sold Income:", totalIncome);
-    }
-  }, [allProducts]);
-
-  useEffect(() => {
-    const today = new Date();
-    const todayStr = today.toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-
-    console.log(todayStr);
-
-    const todayOrders = orders.filter(
-      (order) =>
-        new Date(order.createdAt).toISOString().split("T")[0] === todayStr
-    );
-
-    const todayTotalIncome = todayOrders.reduce((total, order) => {
+    const todayOrders = orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      const today = new Date();
       return (
-        total +
-        order.products?.reduce(
-          (sum, product) => sum + product.price * product.soldCount,
-          0
-        )
+        orderDate.getFullYear() === today.getFullYear() &&
+        orderDate.getMonth() === today.getMonth() &&
+        orderDate.getDate() === today.getDate()
       );
-    }, 0);
+    });
 
-    const todayTotalSoldCount = todayOrders.reduce((total, order) => {
-      return (
-        total +
-        order.products?.reduce((sum, product) => sum + product.soldCount, 0)
-      );
-    }, 0);
+    const todayTotalIncome =
+      todayOrders.reduce((total, order) => {
+        return total + order.paid;
+      }, 0) || 0;
+
+    const todayTotalSoldCount = todayOrders.length;
 
     setTotalIncome(todayTotalIncome);
     setTotalSoldCount(todayTotalSoldCount);

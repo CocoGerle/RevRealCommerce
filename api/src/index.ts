@@ -13,8 +13,17 @@ import {
 } from "./routes";
 import authMiddleware from "./controllers/middlewares/auth.middleware";
 import { cartRouter } from "./routes/cart.router";
+import { upload } from "./config/multer";
+import { v2 as cloudinary } from "cloudinary";
+import { createCloudinaryController } from "./controllers/cloudinary/create-cloudinary.controller";
 
 connectToDataBase();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 const app = express();
 
@@ -34,6 +43,10 @@ app.use("/auth", authRouter);
 app.use("/review", reviewRouter);
 app.use("/order", orderRouter);
 app.use("/cart", cartRouter);
+
+console.log(process.env.API_KEY);
+
+app.post("/upload", upload.single("image"), createCloudinaryController);
 
 app.listen(3001, () => {
   console.log("server is running on http://localhost:3001");
