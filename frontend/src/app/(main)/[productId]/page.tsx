@@ -54,7 +54,7 @@ interface Product {
 }
 
 const Detail = () => {
-  const { addProductToCart } = useCart();
+  const { addProductToCart, cart } = useCart();
 
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -285,12 +285,15 @@ const Detail = () => {
                 <div>{count}</div>
                 <div
                   className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
-                  onClick={() => setCount((prev) => prev + 1)}
+                  onClick={() =>
+                    setCount((prev) => (prev < product?.qty ? prev + 1 : prev))
+                  }
                   // onClick={() => increaseProductQuantity(product)}
                 >
                   +
                 </div>
               </div>
+              <div>Барааны үлдэгдэл: {product?.qty}</div>
             </div>
             <div>
               <div className="font-bold text-[20px] pb-2">

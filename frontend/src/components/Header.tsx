@@ -36,6 +36,7 @@ export const Header = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
+  // const [isDropdownVisible, setIsDropdownVisible] = useState(true);
 
   const getProducts = async () => {
     try {
@@ -104,7 +105,11 @@ export const Header = () => {
         {filteredProducts.length > 0 && (
           <div className="absolute bg-white text-black w-full mt-1 max-h-64 overflow-y-auto shadow-md rounded-lg z-20">
             {filteredProducts.map((product) => (
-              <Link href={`/product/${product._id}`} key={product._id}>
+              <Link
+                href={`/${product._id}`}
+                key={product._id}
+                onClick={() => setSearch("")}
+              >
                 <div className="flex items-center p-2 hover:bg-gray-100 cursor-pointer">
                   <img
                     src={product.images[0]}

@@ -31,16 +31,27 @@ type CartProduct = {
   selectedSize: string;
   userId: string;
   price: number;
-  qty: number;
 };
 
 type CartContextType = {
   cart: CartProduct[];
   setCart: (cart: CartProduct[]) => void;
-  addProductToCart: (product: Product, size: string, quantitys: number) => void;
-  removeProductFromCart: (product: Product, size: string) => void;
-  increaseProductQuantity: (product: Product, size: string) => void;
-  decreaseProductQuantity: (product: Product, size: string) => void;
+  addProductToCart: (product: Product, size: string, quantity: number) => void;
+  removeProductFromCart: (
+    product: Product,
+    size: string,
+    quantity: number
+  ) => void;
+  increaseProductQuantity: (
+    product: Product,
+    size: string,
+    quantity: number
+  ) => void;
+  decreaseProductQuantity: (
+    product: Product,
+    size: string,
+    quantity: number
+  ) => void;
   clearCart: () => void;
 };
 
@@ -82,7 +93,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
         p.selectedSize === size
     );
     if (existingProduct) {
-      increaseProductQuantity(product, size);
+      increaseProductQuantity(product, size, quantity);
     } else {
       setCart([
         ...cart,

@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
 import { Cards } from "./Cards";
-import React, { useContext, useEffect, useState } from "react";
-import { ProductContext } from "./utils/context";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { api } from "./lib/axios";
+import Link from "next/link";
 
 interface Product {
   _id: string;
@@ -40,20 +39,26 @@ export const Landing = () => {
   useEffect(() => {
     getProducts();
   }, []);
+
   return (
     <div className="mb-[87px]">
       <div className="border max-w-screen-xl m-auto relative rounded-2xl overflow-hidden mt-[56px] mb-[32px]">
-        <div className="w-[100%] h-[446px] ">
-          <Image
-            src="/WildFlower.png"
-            alt="hoodie image"
-            fill
-            style={{ objectFit: "cover" }}
-          />
-        </div>
+        <Link href={`${products[5]?._id}`}>
+          <div className="w-[100%] h-[446px] ">
+            <Image
+              src={products[5]?.images[0]}
+              alt="hoodie image"
+              fill
+              style={{ objectFit: "cover" }}
+              className="transition-transform duration-300 transform hover:scale-150"
+            />
+          </div>
+        </Link>
         <div className="absolute bottom-8 left-8">
-          <p className="text-[18px] font-normal">Wildflower Hoodie</p>
-          <p className="text-[36px] font-bold">120'000</p>
+          <p className="text-[18px] font-normal">{products[5]?.productName}</p>
+          <p className="text-[36px] font-bold">
+            {products[5]?.price.toLocaleString()}₮
+          </p>
         </div>
       </div>
       <div className="max-w-screen-xl m-auto grid grid-cols-4 grid-rows-6 gap-x-5 gap-y-8 [&>div:nth-child(7)]:col-span-2 [&>div:nth-child(7)]:row-span-2 [&>div:nth-child(8)]:row-span-2 [&>div:nth-child(8)]:col-span-2">

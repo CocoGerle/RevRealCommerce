@@ -66,10 +66,9 @@ const Dashboard = () => {
         params: { admin: "admin" },
       });
       setOrders(res.data.orders);
+
       const generatedData = generateChartData(res.data.orders);
       setChartData(generatedData);
-      console.log("Chart Data after generation:", generatedData);
-      console.log(res.data.orders);
     } catch (error) {
       console.log(error);
     }
@@ -83,12 +82,14 @@ const Dashboard = () => {
     const todayOrders = orders.filter((order) => {
       const orderDate = new Date(order.createdAt);
       const today = new Date();
+
       return (
         orderDate.getFullYear() === today.getFullYear() &&
         orderDate.getMonth() === today.getMonth() &&
         orderDate.getDate() === today.getDate()
       );
     });
+    console.log(todayOrders);
 
     const todayTotalIncome =
       todayOrders.reduce((total, order) => {
@@ -103,6 +104,7 @@ const Dashboard = () => {
 
   const generateChartData = (orders: Order[]) => {
     const today = new Date();
+
     const lastFiveDays = Array.from({ length: 5 }, (_, i) => {
       const day = new Date(today);
       day.setDate(today.getDate() - i);
@@ -115,33 +117,28 @@ const Dashboard = () => {
     const data = lastFiveDays.map((day) => {
       const dayOrders = orders.filter((order) => {
         const orderDate = new Date(order.createdAt);
-        const currentDay = new Date(day);
-        return (
-          orderDate.getFullYear() === currentDay.getFullYear() &&
-          orderDate.getMonth() === currentDay.getMonth() &&
-          orderDate.getDate() === currentDay.getDate()
-        );
-      });
+        const orderDateString = orderDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+        });
 
-      console.log("Orders for", day, ":", dayOrders);
+        return orderDateString === day; // Compare formatted date strings
+      });
 
       const totalIncome = dayOrders.reduce((total, order) => {
         const paidAmount = Number(order.paid);
         return total + (isNaN(paidAmount) ? 0 : paidAmount);
       }, 0);
 
-      console.log("Total Income for", day, ":", totalIncome);
-
-      return { month: day, desktop: totalIncome }; // Update this line
+      return { month: day, desktop: totalIncome }; // Return the relevant chart data
     });
 
-    console.log("Generated Chart Data:", data);
     return data.reverse();
   };
 
   const chartConfig = {
     desktop: {
-      label: "Desktop",
+      label: "Орлого",
       color: "black",
     },
   } satisfies ChartConfig;
@@ -237,7 +234,7 @@ const Dashboard = () => {
                         tickLine={false}
                         tickMargin={10}
                         axisLine={false}
-                        tickFormatter={(value) => value.slice(0, 3)}
+                        tickFormatter={(value) => value.slice(0, 6)}
                       />
                       <ChartTooltip
                         cursor={false}
@@ -247,7 +244,6 @@ const Dashboard = () => {
                         dataKey="desktop"
                         fill="var(--color-desktop)"
                         radius={8}
-                        className="w-2"
                       />
                     </BarChart>
                   </ChartContainer>

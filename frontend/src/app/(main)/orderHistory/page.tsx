@@ -138,7 +138,7 @@ const OrderHistory = () => {
                                         </div>
                                       </div>
                                       <div className="font-bold">
-                                        {order.paid.toLocaleString()}₮
+                                        {item?.productId?.price * item.qty}₮
                                       </div>
                                     </div>
                                   </div>

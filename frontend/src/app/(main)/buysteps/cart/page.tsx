@@ -73,7 +73,11 @@ export const Cart = () => {
                       <div
                         className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer hover:bg-[#E4E4E7]"
                         onClick={() =>
-                          decreaseProductQuantity(product, selectedSize)
+                          decreaseProductQuantity(
+                            product,
+                            selectedSize,
+                            quantity
+                          )
                         }
                       >
                         -
@@ -83,7 +87,11 @@ export const Cart = () => {
                       <div
                         className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer hover:bg-[#E4E4E7]"
                         onClick={() =>
-                          increaseProductQuantity(product, selectedSize)
+                          increaseProductQuantity(
+                            product,
+                            selectedSize,
+                            quantity
+                          )
                         }
                       >
                         +
