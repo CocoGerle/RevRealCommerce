@@ -8,11 +8,11 @@ interface User {
   name: string;
   email: string;
   id: string;
-  savedProduct: product[];
+  savedProduct: Product[];
   address: string;
   phoneNumber: string;
 }
-interface product {
+interface Product {
   _id: string;
   productName: string;
   categoryId: string[];

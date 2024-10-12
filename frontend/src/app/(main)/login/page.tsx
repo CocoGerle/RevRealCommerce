@@ -5,6 +5,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { api } from "@/components/lib/axios";
 import { UserContext } from "@/components/utils/context";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const router = useRouter();
@@ -22,15 +24,28 @@ const Login = () => {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post("/auth/login", {
-        email,
+        email: email.toLowerCase(),
         password,
       });
       localStorage.setItem("token", response.data.token); //Localstorage deer token-r SETelne./browser deer hadgalagdsn/
       setUser(response.data.user);
       console.log(response.data);
-      router.push("/");
+      if (response.data.user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
+      toast.success("Амжилттай нэвтэрлээ");
+      // router.push("/");
     } catch (error) {
       console.log(error);
+      toast.error("Та нууц үг эсвэл имэйл хаягаа шалгана уу!");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      login(email, password);
     }
   };
 
@@ -48,6 +63,7 @@ const Login = () => {
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
+              onKeyDown={handleKeyDown}
             />
             <input
               className="rounded-full pl-2 w-full border border-[#E4E4E7] shadow-sm py-1 px-3
@@ -58,6 +74,7 @@ const Login = () => {
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
+              onKeyDown={handleKeyDown}
             />
             <button
               className="px-4 py-2 border w-full text-white bg-[#2563EB] rounded-full"

@@ -122,7 +122,7 @@ const Dashboard = () => {
           day: "2-digit",
         });
 
-        return orderDateString === day; // Compare formatted date strings
+        return orderDateString === day;
       });
 
       const totalIncome = dayOrders.reduce((total, order) => {
@@ -130,7 +130,7 @@ const Dashboard = () => {
         return total + (isNaN(paidAmount) ? 0 : paidAmount);
       }, 0);
 
-      return { month: day, desktop: totalIncome }; // Return the relevant chart data
+      return { month: day, desktop: totalIncome };
     });
 
     return data.reverse();

@@ -54,9 +54,7 @@ interface Category {
 
 export default function Home() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<
-    Product[] | undefined
-  >(undefined);
+  const [filteredProducts, setFilteredProducts] = useState<Product[] | []>([]);
   const [search, setSearch] = useState("");
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [filterByCategory, setFilterByCategory] = useState<string | undefined>(
@@ -428,12 +426,12 @@ export default function Home() {
                                       />
                                     </label>
                                   </div>
-                                  <div className="flex p-5 justify-between">
+                                  <div className="flex p-5 justify-between ">
                                     <div>
-                                      <div className="text-black">
+                                      <div className="text-black ">
                                         Ангиллууд
                                       </div>
-                                      <div className="flex gap-2 mt-1">
+                                      <div className="flex gap-2 mt-1 ">
                                         {allCategories.map((category) => {
                                           const isChecked =
                                             updatedCategory.includes(
@@ -494,7 +492,7 @@ export default function Home() {
               } bg-white p-20 w-fit rounded-2xl`}
               onClick={() => setPage(false)}
             >
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 ">
                 <div className="flex flex-col gap-2">
                   <div className="font-semibold">Ангиллууд</div>
                   <div>
@@ -513,7 +511,7 @@ export default function Home() {
                     <input
                       value={categoryName}
                       onChange={(event) => setCategoryName(event?.target.value)}
-                      className="px-3 bg-[#F7F7F8] text-[#8B8E95] rounded-lg w-full mt-1"
+                      className="px-4 py-3 bg-[#F7F7F8] text-[#8B8E95] rounded-lg w-full mt-1 "
                       placeholder="Ангиллын нэр оруулах"
                     />
                   </label>

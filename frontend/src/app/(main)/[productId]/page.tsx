@@ -3,12 +3,10 @@ import { Cards } from "@/components/Cards";
 import { api } from "@/components/lib/axios";
 import { useParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { GoHeart, GoHeartFill } from "react-icons/go";
 import { FaStar } from "react-icons/fa";
 import Image from "next/image";
 import { UserContext } from "@/components/utils/context";
 import { useCart } from "@/components/utils/CartProvider";
-import Link from "next/link";
 
 const totalStars = 5;
 
