@@ -28,15 +28,17 @@ interface Product {
 }
 
 interface UserContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: User | undefined;
+  setUser: (user: User | undefined) => void;
   LogOut: () => void;
   getUser: () => void;
 }
 
-export const UserContext = createContext<UserContextType>(
-  {} as UserContextType
-);
+// export const UserContext = createContext<UserContextType>(
+//   {} as UserContextType
+// );
+
+export const UserContext = createContext<UserContextType | null>(null);
 
 interface UserContextProviderProps {
   children: ReactNode;
@@ -45,7 +47,7 @@ interface UserContextProviderProps {
 export const UserContextProvider: FC<UserContextProviderProps> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | undefined>(undefined);
 
   const getUser = async () => {
     try {
@@ -64,7 +66,7 @@ export const UserContextProvider: FC<UserContextProviderProps> = ({
   const LogOut = async () => {
     try {
       localStorage.removeItem("token");
-      setUser(null);
+      setUser(undefined);
       toast.success("You have been logged out successfully.");
     } catch (error) {
       console.error("Logout error", error);

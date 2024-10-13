@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/components/lib/axios";
 import { UserContext } from "@/components/utils/context";
@@ -19,7 +18,7 @@ const Login = () => {
     return <div>Loading...</div>;
   }
 
-  const { user, setUser } = userContext;
+  const { setUser } = userContext;
 
   const login = async (email: string, password: string) => {
     try {

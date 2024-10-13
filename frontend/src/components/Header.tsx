@@ -24,11 +24,11 @@ interface Product {
 
 export const Header = () => {
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-  const { user, LogOut } = userContext;
 
+  // Use a default value or fallback for userContext
+  const { user, LogOut } = userContext || { user: null, LogOut: () => {} };
+
+  // Call hooks outside of any conditionals
   const { cart = [] } = useCart(); // Ensure cart is an array
   const userId = user?.id;
   const userCart = cart.filter((item) => item.userId === userId);
@@ -36,7 +36,6 @@ export const Header = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
-  // const [isDropdownVisible, setIsDropdownVisible] = useState(true);
 
   const getProducts = async () => {
     try {
@@ -47,7 +46,7 @@ export const Header = () => {
       });
       setProducts(response.data.allProducts);
     } catch (error) {
-      return console.log(error);
+      console.log(error);
     }
   };
 
@@ -56,17 +55,23 @@ export const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (search.length > 0 && products) {
-      const filtered = products.filter((product) =>
-        product.productName.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts([]);
-    }
+    const filterProducts = () => {
+      if (search.length > 0 && products) {
+        return products.filter((product) =>
+          product.productName.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      return [];
+    };
+
+    const filtered = filterProducts();
+    setFilteredProducts(filtered);
   }, [search, products]);
 
-  // console.log(products);
+  // Render loading state if userContext is not available
+  if (!userContext) {
+    return <div>Loading...</div>; // Only show this if userContext is being fetched
+  }
 
   return (
     <header className="bg-black py-[16px] px-[24px] flex justify-between text-white">

@@ -228,7 +228,7 @@ interface FormValues {
   confirm: string;
 }
 
-export const Register = () => {
+const Register = () => {
   const router = useRouter();
 
   const initialValues: FormValues = {

@@ -1,13 +1,13 @@
 "use client";
 import { api } from "@/components/lib/axios";
-import axios from "axios";
+
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Order {
   userName: string;
-  createdAt: any;
+  createdAt: Date;
   _id: string;
   status: string;
   phoneNumber: string;
@@ -64,11 +64,17 @@ export default function Home() {
     }
   }, [order]);
 
-  const date = new Date(order?.createdAt).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+  let date: string; // Initialize date
+
+  if (order?.createdAt) {
+    date = new Date(order.createdAt).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  } else {
+    date = "N/A"; // Fallback value if the order or date is not available
+  }
 
   return (
     <div className="flex-1 flex flex-col gap-6 bg-[#ECEDF0] p-6">

@@ -72,10 +72,10 @@ export default function Home() {
   );
   const [updatedCategory, setUpdatedCategory] = useState<string[]>([]);
 
-  const [updatedDescription, setUpdatedDescription] = useState("");
-  const [updatedSize, setUpdatedSize] = useState("");
-  const [updatedQty, setUpdatedQty] = useState(0);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  // const [updatedDescription, setUpdatedDescription] = useState("");
+  // const [updatedSize, setUpdatedSize] = useState("");
+  // const [updatedQty, setUpdatedQty] = useState(0);
+  // const [errorMessage, setErrorMessage] = useState<string>("");
 
   const getCategories = async () => {
     try {
@@ -104,7 +104,7 @@ export default function Home() {
     }
   };
 
-  const getProducts = async (categoryId: string | undefined) => {
+  const getProducts = async (filterByCategory: string | undefined) => {
     try {
       const response = await api.get("/product/", {
         headers: {
@@ -138,11 +138,9 @@ export default function Home() {
   const updateProduct = async (productId: string) => {
     const updatedData = {
       productName: updatedName,
-      description: updatedDescription,
+
       categoryId: updatedCategory,
       price: updatedPrice,
-      size: updatedSize,
-      qty: updatedQty,
     };
 
     console.log("Updating product with data:", updatedData);

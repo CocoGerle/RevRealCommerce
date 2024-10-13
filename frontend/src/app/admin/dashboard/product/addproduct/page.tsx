@@ -1,6 +1,5 @@
 "use client";
 import { api } from "@/components/lib/axios";
-import axios from "axios";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -66,6 +65,7 @@ export default function Home() {
       );
       toast.success("Бүтээгдэхүүн амжилттай нэмлээ!");
       window.location.reload();
+      console.log(response);
     } catch (error) {
       console.log(error);
       toast.error("Бүтээгдэхүүн нэмэхэд алдаа гарлаа.");

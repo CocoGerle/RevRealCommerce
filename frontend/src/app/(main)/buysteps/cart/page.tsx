@@ -6,14 +6,11 @@ import { useCart } from "@/components/utils/CartProvider";
 import { FaRegTrashCan } from "react-icons/fa6";
 import Image from "next/image";
 
-export const Cart = () => {
-  // get user
+const Cart = () => {
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-  const { user } = userContext;
+  const { user } = userContext || {}; // Handle user being undefined
 
+  // Always call hooks at the top level
   const {
     cart,
     removeProductFromCart,
@@ -21,19 +18,26 @@ export const Cart = () => {
     decreaseProductQuantity,
   } = useCart();
 
+  // Calculate user cart
   const userId = user?.id;
   const userCart = cart.filter((item) => item.userId === userId);
 
+  // State for total price
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
+  // Calculate total price whenever userCart changes
   useEffect(() => {
-    const totalPrice = userCart.reduce((acc, item) => {
-      return acc + item.product.price * item.quantity;
-    }, 0);
-    setTotalPrice(totalPrice);
+    const total = userCart.reduce(
+      (acc, item) => acc + item.product.price * item.quantity,
+      0
+    );
+    setTotalPrice(total);
   }, [userCart]);
 
-  console.log(userCart);
+  // Loading state for user context
+  if (!userContext) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -105,7 +109,9 @@ export const Cart = () => {
                 </div>
                 <div className="p-4 cursor-pointer">
                   <FaRegTrashCan
-                    onClick={() => removeProductFromCart(product, selectedSize)}
+                    onClick={() =>
+                      removeProductFromCart(product, selectedSize, quantity)
+                    }
                   />
                 </div>
               </div>

@@ -1,8 +1,6 @@
 "use client";
 import { api } from "@/components/lib/axios";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { FiDownload } from "react-icons/fi";
 
 interface Product {
   images: string[];
@@ -41,6 +39,7 @@ const Income = () => {
       console.log("error bdgshaa");
     }
   };
+  console.log(allProducts);
 
   const getOrders = async () => {
     try {

@@ -9,26 +9,24 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 
 const Address = () => {
+  // Context from UserContext
+  const userContext = useContext(UserContext);
+  const { user } = userContext || {}; // Get user or undefined if not available
+
+  const { cart, clearCart } = useCart();
   const router = useRouter();
+
+  // Local state hooks
   const [userName, setUserName] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [addInfo, setAddInfo] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false); // Track order submission status
 
-  // Context from UserContext
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-  const { user, getUser, setUser } = userContext;
-
-  // Cart state
-  const { cart, clearCart } = useCart();
-  const userId = user?.id;
-  const userCart = cart.filter((item) => item.userId === userId);
-
   // Calculate total price
+  const userId = user?.id; // Get userId from user context
+  const userCart = cart.filter((item) => item.userId === userId); // Filter cart for current user
+
   const totalPrice = userCart.reduce((total, item) => {
     return total + item.product.price * item.quantity;
   }, 0);
@@ -71,15 +69,9 @@ const Address = () => {
       router.push("pay");
       toast.success("Захиалга амжилттай үүсгэгдлээ!");
       console.log(response);
-    } catch (error: any) {
-      console.error(
-        "Order creation failed:",
-        error.response?.data || error.message
-      );
-
-      toast.error(
-        error?.response?.data?.message || "Захиалга үүсгэхэд алдаа гарлаа."
-      );
+    } catch (error) {
+      console.error("Order creation failed:", error);
+      toast.error("Захиалга үүсгэхэд алдаа гарлаа.");
     } finally {
       setIsSubmitting(false);
     }
@@ -87,12 +79,15 @@ const Address = () => {
 
   useEffect(() => {
     if (user) {
-      setUserName(user?.name);
-      setAddress(user?.address || "");
-      setPhoneNumber(user?.phoneNumber);
+      setUserName(user.name);
+      setAddress(user.address || "");
+      setPhoneNumber(user.phoneNumber);
     }
   }, [user]);
 
+  if (!userContext) {
+    return <div>Loading...</div>; // Show loading until user context is available
+  }
   return (
     <div>
       <div className="w-[1280px] m-auto">

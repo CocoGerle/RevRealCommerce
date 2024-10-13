@@ -1,4 +1,3 @@
-
 "use client";
 import { api } from "@/components/lib/axios";
 import { UserContext } from "@/components/utils/context";
@@ -6,33 +5,28 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-type User = {
-  id: string;
-  userName: string;
-  phoneNumber: string;
-  email: string;
-  address: string;
-};
-
-type UserContextType = {
-  user: User | null;
-  setUser: (user: User) => void;
-  getUser: () => void;
-};
-
 const UserInfo = () => {
-  const userContext = useContext<UserContextType | null>(UserContext);
-
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-
-  const { user, setUser, getUser } = userContext;
-
+  const userContext = useContext(UserContext);
   const [userName, setUserName] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [address, setAddress] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  if (!userContext) {
+    return <div>Loading...</div>; // Handle the case where userContext is null
+  }
+  const { user, setUser, getUser } = userContext;
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.name || "");
+      setAddress(user.address || "");
+      setEmail(user.email || "");
+      setPhoneNumber(user.phoneNumber || "");
+    }
+    setIsLoading(false); // Set loading to false once the user is set
+  }, [user]);
 
   const updateUser = async () => {
     try {
@@ -52,16 +46,13 @@ const UserInfo = () => {
       getUser();
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.error);
+      toast.error("Хэрэглэгч мэдээллээ өөрчлөхөд алдаа гарлаа");
     }
   };
 
-  useEffect(() => {
-    setUserName(user?.userName || "");
-    setAddress(user?.address || "");
-    setEmail(user?.email || "");
-    setPhoneNumber(user?.phoneNumber || "");
-  }, [user]);
+  if (isLoading) {
+    return <div>Loading...</div>; // Show loading while fetching user data
+  }
 
   return (
     <div className="bg-[#f7f7f7] min-h-[66vh]">
@@ -80,11 +71,7 @@ const UserInfo = () => {
               Хэрэглэгчийн хэсэг
             </h1>
             <div>
-              {user ? (
-                <p>Сайн байна уу, {user?.userName}!</p>
-              ) : (
-                <p>Нэвтэрнэ үү</p>
-              )}
+              {user ? <p>Сайн байна уу, {user?.name}!</p> : <p>Нэвтэрнэ үү</p>}
             </div>
             <div className="flex flex-col gap-4">
               <div className="mt-5">

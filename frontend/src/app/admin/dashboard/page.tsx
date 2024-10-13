@@ -3,15 +3,8 @@ import { FaArrowRight } from "react-icons/fa";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api } from "@/components/lib/axios";
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -36,12 +29,17 @@ interface Order {
   paid: number;
 }
 
+interface ChartData {
+  month: string; // Represents the formatted date as a string
+  desktop: number; // Represents the income amount
+}
+
 const Dashboard = () => {
   const [allProducts, setAllProducts] = useState<Product[] | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [totalSoldCount, setTotalSoldCount] = useState<number>(0);
-  const [chartData, setChartData] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   const getProducts = async () => {
     try {

@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from "react";
 
 interface Order {
   userName: string;
-  createdAt: any;
+  createdAt: Date;
   _id: string;
   status: string;
   phoneNumber: string;
@@ -16,15 +16,25 @@ interface Order {
   paid: number;
 }
 
+interface OrderItem {
+  productId: Product; // Reference to the Product
+  qty: number; // Quantity of the product
+}
+
+interface Product {
+  _id: string; // Assuming there's an ID for the product
+  productName: string;
+  price: number;
+  images: string[]; // Array of image URLs
+}
+
 const OrderHistory = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [hideOrder, setHideOrder] = useState<boolean[]>([]);
 
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-  const { user } = userContext;
+
+  const { user } = userContext || {};
 
   const getOrders = async () => {
     try {
@@ -42,12 +52,21 @@ const OrderHistory = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (user?.id) {
+  //     getOrders();
+  //   } else return;
+  // }, [user?.id]);
+
   useEffect(() => {
     if (user?.id) {
-      getOrders();
+      getOrders(); // Only calls getOrders if user.id is available
     }
-  }, [user]);
+  }, [user?.id]); // Hook itself is still unconditional
 
+  if (!userContext) {
+    return <div>Loading...</div>;
+  }
   const toggleOrder = (index: number) => {
     setHideOrder((prev) => {
       const newHideOrder = [...prev];
@@ -105,7 +124,7 @@ const OrderHistory = () => {
                               } border-gray-300 border-dashed border-b`}
                             >
                               {order?.product?.map(
-                                (item: any, itemIndex: number) => (
+                                (item: OrderItem, itemIndex: number) => (
                                   <div
                                     key={itemIndex}
                                     className="flex gap-2 items-center w-full"

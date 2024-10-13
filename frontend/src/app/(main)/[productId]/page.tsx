@@ -10,10 +10,6 @@ import { useCart } from "@/components/utils/CartProvider";
 
 const totalStars = 5;
 
-type IdType = {
-  productId: string;
-};
-
 type ProductType = {
   _id: string;
   productName: string;
@@ -32,37 +28,50 @@ type ReviewType = {
   _id: string;
   productId: string;
   comment: string;
-  userId: string;
+  userId: {
+    id: string;
+    userName: string;
+  };
   rating: number;
 };
 
-interface Product {
-  _id: string;
-  productName: string;
-  categoryId: string[];
-  price: number;
-  size: string[];
-  qty: number;
-  images: string[];
-  thumbnils: string[];
-  salePercent: number;
-  description: string;
-  reviewCount: number;
-  averageRating: number;
-}
+// interface Product {
+//   _id: string;
+//   productName: string;
+//   categoryId: string[];
+//   price: number;
+//   size: string[];
+//   qty: number;
+//   images: string[];
+//   thumbnils: string[];
+//   salePercent: number;
+//   description: string;
+//   reviewCount: number;
+//   averageRating: number;
+// }
 
 const Detail = () => {
-  const { addProductToCart, cart } = useCart();
-
-  const [products, setProducts] = useState<Product[]>([]);
-
+  const params = useParams();
+  const productId = params.productId as string;
+  const { addProductToCart } = useCart();
   const userContext = useContext(UserContext);
 
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
+  // State declarations at the top
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [product, setProduct] = useState<ProductType | undefined>();
+  const [review, setReview] = useState<ReviewType[]>([]);
+  const [currentImage, setCurrentImage] = useState<number>(0);
+  const [hiddenElement, setHiddenElement] = useState(false);
+  const [count, setCount] = useState(0);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [hiddenComment, setHiddenComment] = useState(false);
+  const [bgColor, setBgColor] = useState(6);
+  const [selectedSize, setSelectedSize] = useState("");
 
-  const { user, getUser } = userContext;
+  // Check user context once at the top and set state accordingly
+
+  const { user } = userContext || {};
 
   const getProducts = async () => {
     try {
@@ -73,63 +82,9 @@ const Detail = () => {
       });
       setProducts(response.data.allProducts);
     } catch (error) {
-      return console.log(error);
+      console.log(error);
     }
   };
-
-  const [selectedSize, setSelectedSize] = useState("");
-
-  const handleSizeSelection = (size: string) => {
-    setSelectedSize(size);
-  };
-
-  // const buyProduct = async () => {
-  //   try {
-  //     const response = await api.post(
-  //       `http://localhost:3001/cart`,
-  //       {
-  //         userId: user?.id,
-  //         quantity: count,
-  //         cartProduct: productId,
-  //         size: sizeChange,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  useEffect(() => {
-    getProducts();
-  }, []);
-  const [product, setProduct] = useState<ProductType>();
-  console.log(product);
-
-  const [review, setReview] = useState<ReviewType[]>([]);
-  const [currentImage, setCurrentImage] = useState<number>(0);
-
-  const [hiddenElement, setHiddenElement] = useState(false);
-  const [count, setCount] = useState(0);
-  // setCart(count);
-  console.log(count);
-
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-
-  const [hiddenComment, setHiddenComment] = useState(false);
-
-  const [bgColor, setBgColor] = useState(6);
-
-  const { productId } = useParams<IdType>();
-
-  // const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
 
   const getProduct = async (productId: string) => {
     try {
@@ -140,7 +95,7 @@ const Detail = () => {
       });
       setProduct(response.data.product);
     } catch (error) {
-      return console.log(error);
+      console.log(error);
     }
   };
 
@@ -152,8 +107,9 @@ const Detail = () => {
         },
       });
       setReview(response.data.review);
-      console.log(response.data.review);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const createReview = async (
@@ -165,7 +121,7 @@ const Detail = () => {
   ) => {
     try {
       const response = await api?.post(
-        "http://localhost:3001/review/",
+        "/review/",
         {
           productId,
           userId,
@@ -179,22 +135,29 @@ const Detail = () => {
           },
         }
       );
-      setComment("");
-      setRating(0);
       await getReview(productId);
       getProduct(productId);
-      console.log(response.data);
+      setComment("");
+      setRating(0);
+      console.log(response);
     } catch (error) {
-      console.log("Review error");
-      console.log(error);
+      console.error("Review error:", error);
     }
   };
 
   useEffect(() => {
-    getProduct(productId);
-    getReview(productId);
-  }, []);
+    getProducts(); // Always call this
 
+    // Conditionally call getProduct and getReview based on productId
+    if (productId) {
+      getProduct(productId);
+      getReview(productId);
+    }
+  }, [productId]);
+
+  if (!userContext) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="max-w-screen-2xl m-auto mt-[52px]">
       <div className="flex items-start justify-center gap-[20px] w-full  ">
@@ -237,13 +200,6 @@ const Detail = () => {
                 </div>
                 <div className="flex gap-2">
                   <div>{product?.productName}</div>
-                  {/* <div onClick={() => toggleHeart(product?._id)}>
-                    {product?._id && hearts[product._id] ? (
-                      <GoHeartFill size={24} />
-                    ) : (
-                      <GoHeart size={24} />
-                    )}
-                  </div> */}
                 </div>
                 <div>{product?.description}</div>
               </div>
@@ -276,7 +232,6 @@ const Detail = () => {
                 <div
                   className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
                   onClick={() => setCount((prev) => (prev > 0 ? prev - 1 : 0))}
-                  // onClick={() => decreaseProductQuantity(product)}
                 >
                   -
                 </div>
@@ -284,9 +239,10 @@ const Detail = () => {
                 <div
                   className="flex justify-center items-center p-2 w-8 h-8 rounded-full border border-black cursor-pointer"
                   onClick={() =>
-                    setCount((prev) => (prev < product?.qty ? prev + 1 : prev))
+                    setCount((prev) =>
+                      prev < (product?.qty ?? 0) ? prev + 1 : prev
+                    )
                   }
-                  // onClick={() => increaseProductQuantity(product)}
                 >
                   +
                 </div>
@@ -305,6 +261,17 @@ const Detail = () => {
                     alert("Please select a size before adding to the cart.");
                     return;
                   }
+
+                  if (!product) {
+                    alert("Product is not available.");
+                    return;
+                  }
+
+                  if (count <= 0) {
+                    alert("Please select a quantity greater than 0.");
+                    return;
+                  }
+
                   addProductToCart(product, selectedSize, count);
                 }}
               >
@@ -356,7 +323,7 @@ const Detail = () => {
                     className="border-gray-200 border-b border-dashed pt-6 pb-[21px]"
                   >
                     <div className="flex items-center gap-2">
-                      <div>{item.userId?.userName}</div>
+                      <div>{item?.userId?.userName}</div>
                       <div className="flex">
                         {Array.from({ length: totalStars }, (_, starIndex) => (
                           <FaStar
@@ -409,7 +376,17 @@ const Detail = () => {
                   <button
                     className="bg-[#2563EB] w-fit text-white py-2 px-9 rounded-full"
                     onClick={() => {
-                      createReview(productId, user?.id, comment, rating);
+                      if (!user?.id) {
+                        console.error("User not found");
+                        return;
+                      }
+                      createReview(
+                        productId,
+                        user?.id,
+                        comment,
+                        rating,
+                        user?.name
+                      );
                       setHiddenComment(!hiddenComment);
                     }}
                   >

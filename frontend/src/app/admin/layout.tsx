@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { AdminNavbar } from "./components/adminNavbar";
 import { AdminBurgerBar } from "./components/adminBurgerBar";
 

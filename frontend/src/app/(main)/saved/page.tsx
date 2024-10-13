@@ -9,8 +9,13 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 const Saved = () => {
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
   const userContext = useContext(UserContext);
-  const { user, getUser } = userContext;
+
+  const { user, getUser } = userContext || {};
   const { addProductToCart } = useCart();
+
+  if (!user) {
+    console.error("user oldsongui,");
+  }
 
   const toggleHeart = async (index: number, id: string) => {
     setHearts((prevHearts) => ({
@@ -33,7 +38,7 @@ const Saved = () => {
           }
         );
         console.log(response.data);
-        getUser(); // Refresh user data after the operation
+        getUser?.(); // Refresh user data after the operation
       } catch (error) {
         console.log(error);
       }
@@ -43,7 +48,7 @@ const Saved = () => {
   };
 
   useEffect(() => {
-    if (user?.savedProduct?.length > 0) {
+    if (user) {
       user.savedProduct.forEach((item, index) => {
         const isLiked = item._id ? true : false;
         setHearts((prevHearts) => ({
@@ -55,10 +60,7 @@ const Saved = () => {
   }, [user]);
 
   useEffect(() => {
-    if (
-      user?.savedProduct?.length > 0 &&
-      user.savedProduct[0]?.images?.length > 0
-    ) {
+    if (user?.savedProduct?.length) {
       console.log(user.savedProduct[0].images[0]);
     } else {
       console.log("No saved products or images found");
@@ -74,7 +76,7 @@ const Saved = () => {
             <div>({user?.savedProduct?.length || 0})</div>
           </div>
           <div className="flex flex-col gap-4  ">
-            {user?.savedProduct?.length > 0 ? (
+            {user ? (
               user.savedProduct.map((item, index) => (
                 <div
                   key={item._id}
