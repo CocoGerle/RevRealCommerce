@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { FiSearch, FiHeart, FiShoppingCart, FiUser } from "react-icons/fi";
-import { UserContext } from "./utils/context";
+import { UserContext, UserContextType } from "./utils/context";
 import { api } from "./lib/axios";
 import { useCart } from "./utils/CartProvider";
 
@@ -26,7 +26,7 @@ export const Header = () => {
   const userContext = useContext(UserContext);
 
   // Use a default value or fallback for userContext
-  const { user, LogOut } = userContext || { user: null, LogOut: () => {} };
+  const { user, LogOut } = userContext as UserContextType || { user: null, LogOut: () => {} };
 
   // Call hooks outside of any conditionals
   const { cart = [] } = useCart(); // Ensure cart is an array
