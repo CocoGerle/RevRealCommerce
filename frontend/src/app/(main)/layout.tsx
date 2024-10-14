@@ -1,8 +1,8 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { CartProvider } from "@/components/utils/CartProvider";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import { ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 export default function MainLayout({
   children,
@@ -16,7 +16,7 @@ export default function MainLayout({
         <div className="min-h-[60vh]">{children}</div>
 
         <Footer />
-        <ToastContainer />
+        {/* <ToastContainer /> */}
       </CartProvider>
     </div>
   );

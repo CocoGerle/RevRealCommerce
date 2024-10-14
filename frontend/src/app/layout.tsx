@@ -14,7 +14,15 @@ export default function RootLayout({
       <UserContextProvider>
         <body>
           <div>{children}</div>
-          <ToastContainer />
+          <ToastContainer   position="top-right"
+  autoClose={5000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover/>
         </body>
       </UserContextProvider>
     </html>
