@@ -50,7 +50,7 @@ const Dashboard = () => {
       });
       setAllProducts(response.data.allProducts);
     } catch (error) {
-      console.log("error bdgshaa");
+      console.log("error", error);
     }
   };
   const sortedProducts = allProducts?.sort((a, b) => b.soldCount - a.soldCount);

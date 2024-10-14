@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
-import { UserContext } from "./utils/context";
+import { UserContext, UserContextType } from "./utils/context";
 import { api } from "./lib/axios";
 
 interface MyComponentProps {
@@ -25,7 +25,7 @@ export const Cards: React.FC<MyComponentProps> = ({
 }) => {
   const [hearts, setHearts] = useState<{ [index: number]: boolean }>({});
   const userContext = useContext(UserContext);
-  const { user, getUser } = userContext;
+  const { user, getUser } = userContext as UserContextType;
 
   const toggleHeart = async (index: number) => {
     setHearts((prevHearts) => ({

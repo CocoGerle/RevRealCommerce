@@ -1,6 +1,6 @@
 "use client";
 import { api } from "@/components/lib/axios";
-import { UserContext } from "@/components/utils/context";
+import { UserContext, UserContextType } from "@/components/utils/context";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -13,10 +13,7 @@ const UserInfo = () => {
   const [address, setAddress] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
-  if (!userContext) {
-    return <div>Loading...</div>; // Handle the case where userContext is null
-  }
-  const { user, setUser, getUser } = userContext;
+  const { user, setUser, getUser } = userContext as UserContextType;
 
   useEffect(() => {
     if (user) {
@@ -25,7 +22,7 @@ const UserInfo = () => {
       setEmail(user.email || "");
       setPhoneNumber(user.phoneNumber || "");
     }
-    setIsLoading(false); // Set loading to false once the user is set
+    setIsLoading(false);
   }, [user]);
 
   const updateUser = async () => {
@@ -50,8 +47,12 @@ const UserInfo = () => {
     }
   };
 
+  if (!userContext) {
+    return <div>Loading...</div>;
+  }
+
   if (isLoading) {
-    return <div>Loading...</div>; // Show loading while fetching user data
+    return <div>Loading...</div>;
   }
 
   return (

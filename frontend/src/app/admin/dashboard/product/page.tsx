@@ -159,8 +159,6 @@ export default function Home() {
       getProducts(filterByCategory); // Optionally update the product list
     } catch (error) {
       console.error("Error updating product:", error);
-      // Optional: Set an error state to show in the UI
-      setErrorMessage("Failed to update product. Please try again.");
     }
   };
 

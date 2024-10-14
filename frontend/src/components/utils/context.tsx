@@ -27,7 +27,7 @@ interface Product {
   averageRating: number;
 }
 
-interface UserContextType {
+export interface UserContextType {
   user: User | undefined;
   setUser: (user: User | undefined) => void;
   LogOut: () => void;
